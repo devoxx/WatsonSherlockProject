@@ -30,7 +30,7 @@ public class InsightsRestController {
     @Autowired
     private Corpus corpus;
 
-    @RequestMapping(value = "/search/{value}",
+    @RequestMapping(value = "/api/search/{value}",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Result> searchInsights(@PathVariable("value") String searchText) {

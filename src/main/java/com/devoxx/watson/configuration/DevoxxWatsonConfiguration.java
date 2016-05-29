@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.Resource;
 
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
 @EnableAsync
 @EnableScheduling
 @EnableWebMvc
+@EnableSwagger2
 @PropertySource(value = { "classpath:application.properties" })
 @ComponentScan(basePackages = "com.devoxx.watson")
 public class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
@@ -58,6 +60,8 @@ public class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations(
                 "/static/");
+        registry.addResourceHandler("/swagger/**")
+                .addResourceLocations("/swagger/");
     }
 
     @Bean

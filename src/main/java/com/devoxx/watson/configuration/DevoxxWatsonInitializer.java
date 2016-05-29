@@ -20,7 +20,7 @@ public class DevoxxWatsonInitializer extends
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[]{"/", "/swagger-ui.html"};
     }
 
     @Override

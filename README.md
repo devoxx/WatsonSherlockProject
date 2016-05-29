@@ -42,6 +42,11 @@ Once the server is running, the application will be available under [http://loca
     ```bash
     $ cf push <appname> -p target/DevoxxWatsonAudioFileProcessor.war
     ```
+# Testing REST interface
+
+1. Surf to http://[yourHostName]/swagger
+2. Enter "http://[yourHostName]/v2/api-docs/"
+3. You can now explore the Search REST method
 
 # License
 
