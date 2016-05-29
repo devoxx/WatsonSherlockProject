@@ -101,11 +101,11 @@ class ProcessAudioFile {
         final String account = conceptInsights.getFirstAccountId();
 
         final Corpus corpus = new Corpus(account, "devoxx_corpus1");
-        final List<AccountPermission> accountPermissions = corpus.getAccountPermissions();
-        final AccountPermission accountPermission = new AccountPermission();
-        accountPermission.setPermission("READ_WRITE");
-        accountPermissions.add(accountPermission);
-        corpus.setAccountPermissions(accountPermissions);
+        //final List<AccountPermission> accountPermissions = corpus.getAccountPermissions();
+        //final AccountPermission accountPermission = new AccountPermission();
+        //accountPermission.setPermission("READ_WRITE_ADMIN");
+        //accountPermissions.add(accountPermission);
+        //corpus.setAccountPermissions(accountPermissions);
 
         LOGGER.info("create document");
         Document newDocument = new Document(corpus, UUID.randomUUID().toString());

@@ -1,0 +1,13 @@
+---
+applications:
+- path: target/JavaHelloWorldApp.war
+  memory: 512M
+  instances: 1
+  domain: mybluemix.net
+  buildpack: https://github.com/cloudfoundry/java-buildpack
+  name: devoxx-watson-videosearch
+  host: devoxx-watson-videosearch
+  disk_quota: 1024M
+  services:
+  - concept-insights-standard
+  - concept-insights-service
