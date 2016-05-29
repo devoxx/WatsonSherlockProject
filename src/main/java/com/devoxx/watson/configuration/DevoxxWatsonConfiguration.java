@@ -1,9 +1,13 @@
 package com.devoxx.watson.configuration;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
+import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -71,6 +75,13 @@ public class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
         String username = env.getProperty("insight.username");
         String password = env.getProperty("insight.password");
         conceptInsights.setUsernameAndPassword(username, password);
+
         return conceptInsights;
+    }
+
+    @Bean
+    public Corpus getCorpus() {
+        final ConceptInsights conceptInsights = conceptInsights();
+        return new Corpus(conceptInsights.getFirstAccountId(), env.getProperty("corpus.name"));
     }
 }

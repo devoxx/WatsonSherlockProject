@@ -1,7 +1,6 @@
 package com.devoxx.watson.controller;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.AccountPermission;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -34,6 +32,9 @@ class ProcessAudioFile {
 
     @Autowired
     private SpeechToText speechToText;
+
+    @Autowired
+    private Corpus corpus;
 
     private String docName;
 
@@ -99,13 +100,6 @@ class ProcessAudioFile {
 
         LOGGER.info("create corpus");
         final String account = conceptInsights.getFirstAccountId();
-
-        final Corpus corpus = new Corpus(account, "devoxx_corpus1");
-        //final List<AccountPermission> accountPermissions = corpus.getAccountPermissions();
-        //final AccountPermission accountPermission = new AccountPermission();
-        //accountPermission.setPermission("READ_WRITE_ADMIN");
-        //accountPermissions.add(accountPermission);
-        //corpus.setAccountPermissions(accountPermissions);
 
         LOGGER.info("create document");
         Document newDocument = new Document(corpus, UUID.randomUUID().toString());
