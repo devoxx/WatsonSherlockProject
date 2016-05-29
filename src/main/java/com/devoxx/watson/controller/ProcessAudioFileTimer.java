@@ -5,8 +5,6 @@ package com.devoxx.watson.controller;
  */
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
-import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,11 +25,9 @@ import java.util.logging.Logger;
 class ProcessAudioFileTimer {
 
     private static final String OGG_FILE_EXTENSION = ".ogg";
-    @Autowired
-    private SpeechToText speechToText;
 
     @Autowired
-    private ConceptInsights conceptInsights;
+    private ProcessAudioFile processAudioFile;
 
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFileTimer.class.getName());
 
@@ -64,9 +60,7 @@ class ProcessAudioFileTimer {
                 List<String> content = getMetaFileContentAndRemove(file);
 
                 if (!content.isEmpty()) {
-                    ProcessAudioFile processAudioFile;
-                    processAudioFile = new ProcessAudioFile(speechToText, conceptInsights, content.get(1), content.get(0));
-                    processAudioFile.execute(file);
+                    processAudioFile.execute(file, content.get(1), content.get(0));
                 } else {
                     LOGGER.log(Level.FINER, "Already processed!");
                 }

@@ -10,6 +10,8 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.Transcript;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.HashMap;
@@ -22,12 +24,15 @@ import java.util.logging.Logger;
 /**
  * @author Stephan Janssen
  */
+@Component
 class ProcessAudioFile {
 
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
 
+    @Autowired
     private ConceptInsights conceptInsights;
 
+    @Autowired
     private SpeechToText speechToText;
 
     private String docName;
@@ -35,29 +40,17 @@ class ProcessAudioFile {
     private String youTubeLink;
 
     /**
-     * I would have loved to (Spring) inject these but for some reason Spring always gives null references!!
-     *
-     * @param speechToText  the speech to text component
-     * @param conceptInsights concept insights component
-     * @param docName the audio documentName
-     * @param youTubeLink the YouTube link
-     */
-    ProcessAudioFile(final SpeechToText speechToText,
-                     final ConceptInsights conceptInsights,
-                     final String docName,
-                     final String youTubeLink) {
-        this.speechToText = speechToText;
-        this.conceptInsights = conceptInsights;
-        this.docName = docName;
-        this.youTubeLink = youTubeLink;
-    }
-
-    /**
      * Process the audio file asynchronously.
      *
      * @param audioFile     the audio file
      */
-    void execute(final File audioFile) {
+    void execute(final File audioFile,
+                 final String docName,
+                 final String youTubeLink) {
+
+        this.docName = docName;
+
+        this.youTubeLink = youTubeLink;
 
         // Start speech to text process
         SpeechResults speechResults = processSpeechToText(audioFile);
