@@ -36,12 +36,12 @@ public class DevoxxWatsonInitializer extends
     // Temporary location where files will be stored
     public static final String LOCATION = "./";
 
-    // 50MB : Max file size.
-    private static final long MAX_FILE_SIZE = 52428800;
+    // 75MB : Max file size.
+    private static final long MAX_FILE_SIZE = 78643200;
 
     // Beyond that size spring will throw exception.
-    // 50MB : Total request size containing Multi part.
-    private static final long MAX_REQUEST_SIZE = 52428800;
+    // 75MB : Total request size containing Multi part.
+    private static final long MAX_REQUEST_SIZE = 78643200;
 
     // Size threshold after which files will be written to disk
     private static final int FILE_SIZE_THRESHOLD = 0;
