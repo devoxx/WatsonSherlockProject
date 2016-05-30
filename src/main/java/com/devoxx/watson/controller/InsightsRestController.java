@@ -45,10 +45,8 @@ public class InsightsRestController {
         RequestedFields concept_fields = new RequestedFields();
         concept_fields.include("link");
         concept_fields.include("\"abstract\":1");
-        RequestedFields document_fields = new RequestedFields();
-        document_fields.include("\"user_fields\":1");
 
-        searchGraphConceptByLabelParams.put("concept_fields", concept_fields);
+        searchGraphConceptByLabelParams.put(ConceptInsights.CONCEPT_FIELDS, concept_fields);
 
         Matches matches = conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
 
