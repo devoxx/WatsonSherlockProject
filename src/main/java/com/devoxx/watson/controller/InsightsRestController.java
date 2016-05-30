@@ -84,14 +84,20 @@ public class InsightsRestController {
         return new ResponseEntity<>(queryConcepts.getResults(), HttpStatus.OK);
     }
 
+
     @RequestMapping(value = "/documents",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getDocuments(@RequestParam(value="limit", required=false, defaultValue = "20") int limit) {
+
         final Map<String, Object> queryParameters = new HashMap<String, Object>();
         queryParameters.put(ConceptInsights.LIMIT, limit);
-        return new ResponseEntity<>(conceptInsights.listDocuments(corpus, queryParameters), HttpStatus.OK);
+
+        final ServiceCall<Documents> serviceCall = conceptInsights.listDocuments(corpus, queryParameters);
+
+        return new ResponseEntity<>(serviceCall.execute(), HttpStatus.OK);
     }
+
 
     @RequestMapping(value = "/document/{id}",
             method = RequestMethod.GET,
