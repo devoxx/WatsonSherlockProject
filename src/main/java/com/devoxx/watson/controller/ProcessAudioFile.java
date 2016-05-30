@@ -5,6 +5,7 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import com.ibm.watson.developer_cloud.http.ServiceCall;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
@@ -72,17 +73,20 @@ class ProcessAudioFile {
     private SpeechResults processSpeechToText(final File audioFile) {
         LOGGER.info("process speech to text service");
 
-        final RecognizeOptions options = new RecognizeOptions();
-        options.contentType("audio/ogg");
-        options.continuous(true);
-        options.interimResults(false);
+        final RecognizeOptions options = new RecognizeOptions
+                .Builder()
+                .contentType("audio/ogg")
+                .continuous(true)
+                .interimResults(false)
+                .build();
 
         SpeechResults speechResults = null;
 
         // get speech results
         LOGGER.info("get speech results");
         try {
-            speechResults = speechToText.recognize(audioFile, options);
+            ServiceCall<SpeechResults> serviceCall = speechToText.recognize(audioFile, options);
+            speechResults = serviceCall.execute();
             if (speechResults != null) {
                 LOGGER.log(Level.INFO, "got speech results (index={0})", speechResults.getResultIndex());
             }

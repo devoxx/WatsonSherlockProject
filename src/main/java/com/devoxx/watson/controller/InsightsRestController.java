@@ -2,6 +2,7 @@ package com.devoxx.watson.controller;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
+import com.ibm.watson.developer_cloud.http.ServiceCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,7 +49,9 @@ public class InsightsRestController {
 
         searchGraphConceptByLabelParams.put(ConceptInsights.CONCEPT_FIELDS, concept_fields);
 
-        Matches matches = conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
+        ServiceCall<Matches> serviceCall = conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
+
+        final Matches matches = serviceCall.execute();
 
         LOGGER.log(Level.INFO, "Found {0} matches", matches.getMatches().size());
 
@@ -64,11 +67,12 @@ public class InsightsRestController {
         parameters.put(ConceptInsights.LIMIT, 20);
 
         RequestedFields requestedFields = new RequestedFields();
-        requestedFields.include("\"user_fields\":1");
+        requestedFields.include("user_fields");
         parameters.put(ConceptInsights.DOCUMENT_FIELDS, requestedFields);
 
-        QueryConcepts queryConcepts = conceptInsights.conceptualSearch(corpus, parameters);
+        ServiceCall<QueryConcepts> conceptsServiceCall = conceptInsights.conceptualSearch(corpus, parameters);
 
+        final QueryConcepts queryConcepts = conceptsServiceCall.execute();
         // output results
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
         return new ResponseEntity<>(queryConcepts.getResults(), HttpStatus.OK);
@@ -77,7 +81,7 @@ public class InsightsRestController {
     @RequestMapping(value = "/documents",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Documents> getDocuments(@RequestParam(value="limit", required=false, defaultValue = "20") int limit) {
+    public ResponseEntity getDocuments(@RequestParam(value="limit", required=false, defaultValue = "20") int limit) {
         final Map<String, Object> queryParameters = new HashMap<String, Object>();
         queryParameters.put(ConceptInsights.LIMIT, limit);
         return new ResponseEntity<>(conceptInsights.listDocuments(corpus, queryParameters), HttpStatus.OK);
@@ -86,11 +90,13 @@ public class InsightsRestController {
     @RequestMapping(value = "/document/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Document> getDocument(@PathVariable("id") String documentId) {
+    public ResponseEntity getDocument(@PathVariable("id") String documentId) {
         final Map<String, Object> queryParameters = new HashMap<String, Object>();
         queryParameters.put(ConceptInsights.LIMIT, 20);
-        final Documents documents = conceptInsights.listDocuments(corpus, queryParameters);
 
+        final ServiceCall<Documents> serviceCall = conceptInsights.listDocuments(corpus, queryParameters);
+
+        final Documents documents = serviceCall.execute();
         final List<String> documentList = documents.getDocuments();
         for (String id : documentList) {
             if (id.endsWith(documentId)) {
