@@ -110,11 +110,17 @@ public class InsightsRestController {
 
         final Documents documents = serviceCall.execute();
         final List<String> documentList = documents.getDocuments();
+
         for (String id : documentList) {
+
             if (id.endsWith(documentId)) {
+
                 Document doc = new Document();
                 doc.setId(id);
-                return new ResponseEntity<>(conceptInsights.getDocument(doc), HttpStatus.OK);
+
+                final ServiceCall<Document> documentServiceCall = conceptInsights.getDocument(doc);
+
+                return new ResponseEntity<>(documentServiceCall.execute(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
