@@ -35,7 +35,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String getHomePage(ModelMap model) {
+    public String getHomePage() {
         return "welcome";
     }
 

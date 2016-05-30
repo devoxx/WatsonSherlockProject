@@ -30,7 +30,7 @@ import javax.annotation.Resource;
 @EnableSwagger2
 @PropertySource(value = { "classpath:application.properties" })
 @ComponentScan(basePackages = "com.devoxx.watson")
-public class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
+class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
 
     @Resource
     private Environment env;

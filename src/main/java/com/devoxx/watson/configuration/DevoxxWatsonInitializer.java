@@ -20,7 +20,7 @@ public class DevoxxWatsonInitializer extends
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/", "/swagger-ui.html"};
+        return new String[]{"/"};
     }
 
     @Override
@@ -36,12 +36,12 @@ public class DevoxxWatsonInitializer extends
     // Temporary location where files will be stored
     public static final String LOCATION = "./";
 
-    // 25MB : Max file size.
-    private static final long MAX_FILE_SIZE = 25242880;
+    // 50MB : Max file size.
+    private static final long MAX_FILE_SIZE = 52428800;
 
     // Beyond that size spring will throw exception.
-    // 20MB : Total request size containing Multi part.
-    private static final long MAX_REQUEST_SIZE = 20971520;
+    // 50MB : Total request size containing Multi part.
+    private static final long MAX_REQUEST_SIZE = 52428800;
 
     // Size threshold after which files will be written to disk
     private static final int FILE_SIZE_THRESHOLD = 0;
