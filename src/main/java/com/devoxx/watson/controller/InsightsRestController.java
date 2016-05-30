@@ -34,7 +34,7 @@ public class InsightsRestController {
     @RequestMapping(value = "/search/{value}",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Result>> searchInsights(@PathVariable("value") String searchText) {
+    public ResponseEntity searchInsights(@PathVariable("value") String searchText) {
 
         LOGGER.log(Level.INFO, "Label search for \"{0}\"", searchText);
 
@@ -45,11 +45,12 @@ public class InsightsRestController {
 
         RequestedFields concept_fields = new RequestedFields();
         concept_fields.include("link");
-        concept_fields.include("\"abstract\":1");
+        concept_fields.include("abstract");
 
         searchGraphConceptByLabelParams.put(ConceptInsights.CONCEPT_FIELDS, concept_fields);
 
-        ServiceCall<Matches> serviceCall = conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
+        ServiceCall<Matches> serviceCall =
+                conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
 
         final Matches matches = serviceCall.execute();
 
@@ -62,6 +63,10 @@ public class InsightsRestController {
             break;
         }
 
+        if (ids.isEmpty()) {
+            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
+        }
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ConceptInsights.IDS, ids);
         parameters.put(ConceptInsights.LIMIT, 20);
@@ -72,8 +77,9 @@ public class InsightsRestController {
 
         ServiceCall<QueryConcepts> conceptsServiceCall = conceptInsights.conceptualSearch(corpus, parameters);
 
+        // Synchronous call
         final QueryConcepts queryConcepts = conceptsServiceCall.execute();
-        // output results
+
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
         return new ResponseEntity<>(queryConcepts.getResults(), HttpStatus.OK);
     }
