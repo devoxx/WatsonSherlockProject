@@ -1,12 +1,12 @@
 ---
 applications:
-- path: target/JavaHelloWorldApp.war
-  memory: 512M
+- path: target/DevoxxWatsonAudioFileProcessor.war
+  memory: 1024M
   instances: 1
   domain: mybluemix.net
   buildpack: https://github.com/cloudfoundry/java-buildpack
-  name: devoxx-watson-videosearch
-  host: devoxx-watson-videosearch
+  name: devoxx2-watson-videosearch
+  host: devoxx2-watson-videosearch
   disk_quota: 1024M
   services:
   - concept-insights-standard

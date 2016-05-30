@@ -71,7 +71,7 @@ class ProcessAudioFile {
      * @param audioFile the audio file
      */
     private SpeechResults processSpeechToText(final File audioFile) {
-        LOGGER.info("process speech to text service");
+        LOGGER.log(Level.INFO, "process speech to text service for {0}", docName);
 
         final RecognizeOptions options = new RecognizeOptions
                 .Builder()
@@ -83,7 +83,7 @@ class ProcessAudioFile {
         SpeechResults speechResults = null;
 
         // get speech results
-        LOGGER.info("get speech results");
+        LOGGER.log(Level.INFO, "get speech results for {0}", docName);
         try {
             ServiceCall<SpeechResults> serviceCall = speechToText.recognize(audioFile, options);
             speechResults = serviceCall.execute();
@@ -102,7 +102,7 @@ class ProcessAudioFile {
      */
     private void processConceptInsights(final SpeechResults speechResults) {
 
-        LOGGER.info("create document");
+        LOGGER.log(Level.INFO, "create document for {0}", docName);
         Document newDocument = new Document(corpus, UUID.randomUUID().toString());
         newDocument.setName(docName);
         newDocument.setLabel(docName);
