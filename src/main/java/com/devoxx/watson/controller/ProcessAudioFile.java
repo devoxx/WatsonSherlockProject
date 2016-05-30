@@ -98,9 +98,6 @@ class ProcessAudioFile {
      */
     private void processConceptInsights(final SpeechResults speechResults) {
 
-        LOGGER.info("create corpus");
-        final String account = conceptInsights.getFirstAccountId();
-
         LOGGER.info("create document");
         Document newDocument = new Document(corpus, UUID.randomUUID().toString());
         newDocument.setName(docName);
@@ -119,13 +116,5 @@ class ProcessAudioFile {
         newDocument.addParts(new Part("part_", stringBuilder.toString(), HttpMediaType.TEXT_PLAIN));
 
         conceptInsights.createDocument(newDocument);
-
-        // Why is the follow step needed?  GET / UPDATE
-
-        LOGGER.info("get document");
-        Document foundDocument = conceptInsights.getDocument(newDocument);
-
-        LOGGER.info("update document");
-        conceptInsights.updateDocument(foundDocument );
     }
 }

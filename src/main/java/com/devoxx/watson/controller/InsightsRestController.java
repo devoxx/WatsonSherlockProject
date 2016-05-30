@@ -3,11 +3,10 @@ package com.devoxx.watson.controller;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import java.util.logging.Logger;
 /**
  * @author Stephan Janssen
  */
+@RequestMapping("/api/")
 @RestController
 public class InsightsRestController {
 
@@ -30,17 +30,17 @@ public class InsightsRestController {
     @Autowired
     private Corpus corpus;
 
-    @RequestMapping(value = "/api/search/{value}",
+    @RequestMapping(value = "/search/{value}",
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Result> searchInsights(@PathVariable("value") String searchText) {
+    public ResponseEntity<List<Result>> searchInsights(@PathVariable("value") String searchText) {
 
         LOGGER.log(Level.INFO, "Label search for \"{0}\"", searchText);
 
         Map<String, Object> searchGraphConceptByLabelParams = new HashMap<>();
-        searchGraphConceptByLabelParams.put("query", searchText);
-        searchGraphConceptByLabelParams.put("prefix", true);
-        searchGraphConceptByLabelParams.put("limit", 10);
+        searchGraphConceptByLabelParams.put(ConceptInsights.QUERY, searchText);
+        searchGraphConceptByLabelParams.put(ConceptInsights.PREFIX, true);
+        searchGraphConceptByLabelParams.put(ConceptInsights.LIMIT, 10);
 
         RequestedFields concept_fields = new RequestedFields();
         concept_fields.include("link");
@@ -73,6 +73,34 @@ public class InsightsRestController {
 
         // output results
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
-        return queryConcepts.getResults();
+        return new ResponseEntity<>(queryConcepts.getResults(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/documents",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Documents> getDocuments(@RequestParam(value="limit", required=false, defaultValue = "20") int limit) {
+        final Map<String, Object> queryParameters = new HashMap<String, Object>();
+        queryParameters.put(ConceptInsights.LIMIT, limit);
+        return new ResponseEntity<>(conceptInsights.listDocuments(corpus, queryParameters), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/document/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Document> getDocument(@PathVariable("id") String documentId) {
+        final Map<String, Object> queryParameters = new HashMap<String, Object>();
+        queryParameters.put(ConceptInsights.LIMIT, 20);
+        final Documents documents = conceptInsights.listDocuments(corpus, queryParameters);
+
+        final List<String> documentList = documents.getDocuments();
+        for (String id : documentList) {
+            if (id.endsWith(documentId)) {
+                Document doc = new Document();
+                doc.setId(id);
+                return new ResponseEntity<>(conceptInsights.getDocument(doc), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
