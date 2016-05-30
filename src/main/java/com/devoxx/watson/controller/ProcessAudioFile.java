@@ -119,6 +119,8 @@ class ProcessAudioFile {
 
         newDocument.addParts(new Part("part_", stringBuilder.toString(), HttpMediaType.TEXT_PLAIN));
 
-        conceptInsights.createDocument(newDocument);
+        LOGGER.info("Create document");
+        final ServiceCall<Void> documentServiceCall = conceptInsights.createDocument(newDocument);
+        documentServiceCall.execute();
     }
 }
