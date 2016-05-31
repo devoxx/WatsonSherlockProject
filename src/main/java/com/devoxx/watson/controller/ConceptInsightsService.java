@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import static java.lang.Math.abs;
 class ConceptInsightsService {
 
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
+    private static final int MAX_DOCUMENTS_TO_SEARCH = 2000;
 
     @Autowired
     private ConceptInsights conceptInsights;
@@ -79,24 +81,21 @@ class ConceptInsightsService {
     Document findDocument(final String documentId) {
 
         final Map<String, Object> queryParameters = new HashMap<>();
-        queryParameters.put(ConceptInsights.LIMIT, 20);
+        queryParameters.put(ConceptInsights.LIMIT, MAX_DOCUMENTS_TO_SEARCH);
 
         final Documents documents = conceptInsights.listDocuments(corpus, queryParameters).execute();
 
-        final List<String> documentList = documents.getDocuments();
+        final Optional<String> docId = documents.getDocuments().stream()
+                .filter(e -> e.endsWith(documentId))
+                .findFirst();
 
-        for (String id : documentList) {
-
-            if (id.endsWith(documentId)) {
-
-                Document doc = new Document();
-                doc.setId(id);
-
-                return conceptInsights.getDocument(doc).execute();
-            }
+        if (docId.isPresent()) {
+            Document doc = new Document();
+            doc.setId(docId.get());
+            return conceptInsights.getDocument(doc).execute();
+        } else {
+            return null;
         }
-
-        return null;
     }
 
     /**

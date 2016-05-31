@@ -130,11 +130,13 @@ class UploadController {
 
                     model.addAttribute("content", doc.title());
                 } else {
+                    // TODO Correct this... because this error will not appear in the HTML form
                     result.addError(new ObjectError("link", "Try again"));
                     return "articleUploader";
                 }
 
             } catch (IOException | IllegalArgumentException e) {
+                // TODO Correct this... because this error will not appear in the HTML form
                 result.addError(new ObjectError("link", "Wrong URL"));
                 return "articleUploader";
             }
