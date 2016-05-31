@@ -58,7 +58,7 @@ class ConceptInsightsService {
      */
     boolean documentExists(final String label) {
 
-        return findDocument("" + label.hashCode()) != null;
+        return findDocument("" + abs(label.hashCode())) != null;
     }
 
     /**
