@@ -36,7 +36,7 @@ class ConceptInsightsService {
     void createDocument(final String docName, final String link, final String text) {
 
         LOGGER.log(Level.INFO, "create document for {0}", docName);
-        Document newDocument = new Document(corpus, "" + abs(docName.hashCode()));
+        Document newDocument = new Document(corpus, createDocumentId(docName));
         newDocument.setName(docName);
         newDocument.setLabel(docName);
 
@@ -58,7 +58,18 @@ class ConceptInsightsService {
      */
     boolean documentExists(final String label) {
 
-        return findDocument("" + abs(label.hashCode())) != null;
+        return findDocument(createDocumentId(label)) != null;
+    }
+
+    /**
+     * Create a unique document identifier.
+     *
+     * @param docName   the document name
+     * @return a positive hashcode value
+     */
+    private String createDocumentId(String docName) {
+
+        return String.valueOf(abs(docName.hashCode()));
     }
 
     /**
@@ -110,6 +121,12 @@ class ConceptInsightsService {
     }
 
 
+    /**
+     * Search the documents.
+     *
+     * @param searchText    the search text
+     * @return list of documents
+     */
     List<Result> searchDocuments(final String searchText) {
 
         LOGGER.log(Level.INFO, "Label search for \"{0}\"", searchText);
