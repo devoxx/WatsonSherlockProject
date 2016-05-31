@@ -4,6 +4,7 @@ import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
 import com.devoxx.watson.util.UploadValidator;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -114,20 +115,26 @@ class UploadController {
                 }
 
 
-                Document doc = Jsoup.connect(ampLink).get();
-                String title = doc.title();
+                final Connection connect = Jsoup.connect(ampLink);
+                Document doc = connect.get();
 
-                if (!conceptInsightsService.documentExists(title)) {
+                if (doc != null) {
+                    String title = doc.title();
 
-                    final Elements select = doc.select("div.amp-wp-content p");
+                    if (!conceptInsightsService.documentExists(title)) {
 
-                    conceptInsightsService.createDocument(title, article.getLink(), select.text());
+                        final Elements select = doc.select("div.amp-wp-content p");
+
+                        conceptInsightsService.createDocument(title, article.getLink(), select.text());
+                    }
+
+                    model.addAttribute("content", doc.title());
+                } else {
+                    result.addError(new ObjectError("link", "Try again"));
+                    return "articleUploader";
                 }
 
-                model.addAttribute("content", doc.title());
-
             } catch (IOException | IllegalArgumentException e) {
-                LOGGER.severe(e.getCause().toString());
                 result.addError(new ObjectError("link", "Wrong URL"));
                 return "articleUploader";
             }

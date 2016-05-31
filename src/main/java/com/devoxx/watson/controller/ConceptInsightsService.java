@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.lang.Math.abs;
+
 /**
  * @author Stephan Janssen
  */
@@ -34,7 +36,7 @@ class ConceptInsightsService {
     void createDocument(final String docName, final String link, final String text) {
 
         LOGGER.log(Level.INFO, "create document for {0}", docName);
-        Document newDocument = new Document(corpus, "" + docName.hashCode());
+        Document newDocument = new Document(corpus, "" + abs(docName.hashCode()));
         newDocument.setName(docName);
         newDocument.setLabel(docName);
 
