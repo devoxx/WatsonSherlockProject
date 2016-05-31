@@ -1,8 +1,10 @@
 package com.devoxx.watson.controller;
 
+import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +51,31 @@ class ConceptInsightsService {
 
         LOGGER.info("Create document");
         conceptInsights.createDocument(newDocument).execute();
+    }
+
+    /**
+     * Create a Insights document based on a hyper link.
+     *
+     * @param hyperLink the hyperlink to an HTML article
+     */
+    org.jsoup.nodes.Document createDocument(final String hyperLink) {
+
+        final org.jsoup.nodes.Document document = SoupUtil.getDocument(hyperLink);
+
+        String title = document.title();
+
+        if (!documentExists(title)) {
+
+            final Elements select = document.select("div.amp-wp-content p");
+
+            if (select != null && !select.isEmpty()) {
+                createDocument(title, document.location(), select.text());
+
+                return document;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -17,12 +17,22 @@ import java.util.List;
 @RestController
 class InsightsRestController {
 
-    @Autowired
     private ConceptInsightsService conceptInsightsService;
 
+    @Autowired
+    public void setConceptInsightsService(ConceptInsightsService conceptInsightsService) {
+        this.conceptInsightsService = conceptInsightsService;
+    }
+
+    /**
+     * Search Watson Insights.
+     *
+     * @param searchText the search text
+     * @return results
+     */
     @RequestMapping(value = "/search/{value}",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity searchInsights(@PathVariable("value") String searchText) {
 
         final List<Result> results = conceptInsightsService.searchDocuments(searchText);
@@ -34,16 +44,26 @@ class InsightsRestController {
         }
     }
 
-
+    /**
+     * Get all documents.
+     *
+     * @param limit limit to return
+     * @return list of documents
+     */
     @RequestMapping(value = "/documents",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getDocuments(@RequestParam(value="limit", required=false, defaultValue = "20") int limit) {
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getDocuments(@RequestParam(value = "limit", required = false, defaultValue = "20") int limit) {
 
         return new ResponseEntity<>(conceptInsightsService.getAllDocuments(limit), HttpStatus.OK);
     }
 
-
+    /**
+     * Get a document.
+     *
+     * @param documentId the document identifier
+     * @return a document
+     */
     @RequestMapping(value = "/document/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,6 +75,18 @@ class InsightsRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(foundDocument, HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/article/", method = RequestMethod.POST)
+    public ResponseEntity uploadArticleLink(@RequestParam("link") String link) {
+
+        final org.jsoup.nodes.Document doc = conceptInsightsService.createDocument(link);
+
+        if (doc != null) {
+            return new ResponseEntity<>(doc.title(), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

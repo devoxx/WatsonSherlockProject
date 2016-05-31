@@ -3,17 +3,14 @@ package com.devoxx.watson.controller;
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
+import com.devoxx.watson.util.SoupUtil;
 import com.devoxx.watson.util.UploadValidator;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,43 +103,14 @@ class UploadController {
 
         } else {
 
-            LOGGER.info("Processing " + article.getLink());
+            Document doc = conceptInsightsService.createDocument(article.getLink());
 
-            try {
-                String ampLink = article.getLink();
-                if (!ampLink.endsWith("?amp")) {
-                    ampLink = article.getLink() + "?amp";
-                }
-
-
-                final Connection connect = Jsoup.connect(ampLink);
-                Document doc = connect.get();
-
-                if (doc != null) {
-                    String title = doc.title();
-
-                    if (!conceptInsightsService.documentExists(title)) {
-
-                        final Elements select = doc.select("div.amp-wp-content p");
-
-                        conceptInsightsService.createDocument(title, article.getLink(), select.text());
-                    }
-
-                    model.addAttribute("content", doc.title());
-                } else {
-                    // TODO Correct this... because this error will not appear in the HTML form
-                    result.addError(new ObjectError("link", "Try again"));
-                    return "articleUploader";
-                }
-
-            } catch (IOException | IllegalArgumentException e) {
-                // TODO Correct this... because this error will not appear in the HTML form
-                result.addError(new ObjectError("link", "Wrong URL"));
+            if (doc != null) {
+                model.addAttribute("content", doc.title());
+                return "success";
+            } else {
                 return "articleUploader";
             }
-
         }
-
-        return "success";
     }
 }
