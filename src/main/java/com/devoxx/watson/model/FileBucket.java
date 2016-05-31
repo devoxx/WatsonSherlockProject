@@ -4,11 +4,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileBucket {
 
-    MultipartFile file;
+    private MultipartFile file;
 
-    String link;
+    private String link;
 
-    String docName;
+    private String docName;
 
     public String getLink() {
         return link;

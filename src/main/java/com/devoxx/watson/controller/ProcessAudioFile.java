@@ -1,10 +1,5 @@
 package com.devoxx.watson.controller;
 
-import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Part;
-import com.ibm.watson.developer_cloud.http.HttpMediaType;
 import com.ibm.watson.developer_cloud.http.ServiceCall;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
@@ -14,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,17 +21,12 @@ class ProcessAudioFile {
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
 
     @Autowired
-    private ConceptInsights conceptInsights;
+    private ConceptInsightsService conceptInsightsService;
 
     @Autowired
     private SpeechToText speechToText;
 
-    @Autowired
-    private Corpus corpus;
-
     private String docName;
-
-    private String youTubeLink;
 
     /**
      * Process the audio file asynchronously.
@@ -48,17 +35,20 @@ class ProcessAudioFile {
      */
     void execute(final File audioFile,
                  final String docName,
-                 final String youTubeLink) {
+                 final String link) {
 
         this.docName = docName;
-
-        this.youTubeLink = youTubeLink;
 
         // Start speech to text process
         SpeechResults speechResults = processSpeechToText(audioFile);
 
-        // initialize concept insights service
-        processConceptInsights(speechResults);
+        LOGGER.info("Add speech results into document");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Transcript transcript : speechResults.getResults()) {
+            stringBuilder.append(transcript.getAlternatives().get(0).getTranscript());
+        }
+
+        conceptInsightsService.createDocument(docName, link, stringBuilder.toString());
 
         if (audioFile.delete()) {
             LOGGER.log(Level.INFO, "File {0} removed", audioFile.getName());
@@ -95,32 +85,5 @@ class ProcessAudioFile {
         }
 
         return speechResults;
-    }
-
-    /**
-     * Concept insights service.
-     */
-    private void processConceptInsights(final SpeechResults speechResults) {
-
-        LOGGER.log(Level.INFO, "create document for {0}", docName);
-        Document newDocument = new Document(corpus, UUID.randomUUID().toString());
-        newDocument.setName(docName);
-        newDocument.setLabel(docName);
-
-        final Map<String, String> userFields = new HashMap<>();
-        userFields.put("youTubeLink", youTubeLink);
-        newDocument.setUserFields(userFields);
-
-        LOGGER.info("Add speech results into document");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Transcript transcript : speechResults.getResults()) {
-            stringBuilder.append(transcript.getAlternatives().get(0).getTranscript());
-        }
-
-        newDocument.addParts(new Part("part_", stringBuilder.toString(), HttpMediaType.TEXT_PLAIN));
-
-        LOGGER.info("Create document");
-        final ServiceCall<Void> documentServiceCall = conceptInsights.createDocument(newDocument);
-        documentServiceCall.execute();
     }
 }

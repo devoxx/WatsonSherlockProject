@@ -1,13 +1,18 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
+import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
-import com.devoxx.watson.util.FileValidator;
+import com.devoxx.watson.util.UploadValidator;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,16 +27,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Controller
-public class FileUploadController {
+class UploadController {
 
-    private static final Logger LOGGER = Logger.getLogger(FileUploadController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UploadController.class.getName());
 
     @Autowired
-    FileValidator fileValidator;
+    UploadValidator uploadValidator;
 
-    @InitBinder("fileBucket")
+    @Autowired
+    ConceptInsightsService conceptInsightsService;
+
+    @InitBinder
     protected void initBinderFileBucket(WebDataBinder binder) {
-        binder.setValidator(fileValidator);
+        binder.setValidator(uploadValidator);
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
@@ -47,8 +55,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value = "/audioFileUploader", method = RequestMethod.POST)
-    public String audioFileUpload(@Valid FileBucket fileBucket,
-                                   BindingResult result, ModelMap model) throws IOException {
+    public String audioFileUpload(@Valid FileBucket fileBucket, BindingResult result, ModelMap model) throws IOException {
 
         if (result.hasErrors()) {
             LOGGER.log(Level.FINE, "Form validation errors");
@@ -66,7 +73,7 @@ public class FileUploadController {
 
             FileCopyUtils.copy(fileBucket.getFile().getBytes(), tempFile);
             String fileName = multipartFile.getOriginalFilename();
-            model.addAttribute("fileName", fileName);
+            model.addAttribute("content", fileName);
 
             // Create the meta data txt file with YouTube link
             String txtFileName = tempFile.getAbsolutePath()+".txt";
@@ -78,5 +85,55 @@ public class FileUploadController {
 
             return "success";
         }
+    }
+
+
+    @RequestMapping(value = "/articleUploader", method = RequestMethod.GET)
+    public String getArticlePage(ModelMap model) {
+        final Article article = new Article();
+        model.addAttribute("article", article);
+        return "articleUploader";
+    }
+
+
+    @RequestMapping(value = "/articleUploader", method = RequestMethod.POST)
+    public String contentUpload(@Valid Article article, BindingResult result, ModelMap model) {
+
+        if (result.hasErrors()) {
+            LOGGER.log(Level.FINE, "Form validation errors");
+            return "articleUploader";
+
+        } else {
+
+            LOGGER.info("Processing " + article.getLink());
+
+            try {
+                String ampLink = article.getLink();
+                if (!ampLink.endsWith("?amp")) {
+                    ampLink = article.getLink() + "?amp";
+                }
+
+
+                Document doc = Jsoup.connect(ampLink).get();
+                String title = doc.title();
+
+                if (!conceptInsightsService.documentExists(title)) {
+
+                    final Elements select = doc.select("div.amp-wp-content p");
+
+                    conceptInsightsService.createDocument(title, article.getLink(), select.text());
+                }
+
+                model.addAttribute("content", doc.title());
+
+            } catch (IOException | IllegalArgumentException e) {
+                LOGGER.severe(e.getCause().toString());
+                result.addError(new ObjectError("link", "Wrong URL"));
+                return "articleUploader";
+            }
+
+        }
+
+        return "success";
     }
 }

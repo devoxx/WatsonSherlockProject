@@ -9,9 +9,9 @@
 </head>
 <body>
 	<div class="success">
-		File  <strong>${fileName}</strong> uploaded successfully.
+		<strong>${content}</strong> uploaded successfully.
 		<br/><br/>
-		IBM Watson is now processing your audio file...
+		IBM Watson is now processing your content...
 		<br/><br/>
 		<a href="<c:url value='/welcome' />">Home</a>	
 	</div>

@@ -4,17 +4,17 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Devoxx Watson Audio Uploader</title>
+	<title>Devoxx Watson Content Uploader</title>
 	<link href="<c:url value='/static/css/bootstrap.css' />"  rel="stylesheet"/>
 	<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"/>
 </head>
 <body>
 	<div class="form-container">
-		<h1>Welcome to the Devoxx Watson Audio File Uploader</h1>
+		<h1>Welcome to the Devoxx Watson Content Uploader</h1>
 		
-		Create an ogg audio file and upload it to the Devoxx Watson repository.<br/><br/>
+		Here you can upload an OGG audio file or a Voxxed article to the Devoxx Watson corpus.<br/><br/>
 		
-		<a href="<c:url value='/audioFileUploader' />">Audio Upload</a>
+		<a href="<c:url value='/audioFileUploader' />">Audio</a> or <a href="<c:url value='/articleUploader' />">Article</a> Upload
 	</div> 
 </body>
 </html>
