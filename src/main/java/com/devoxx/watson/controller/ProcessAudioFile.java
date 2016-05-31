@@ -1,6 +1,5 @@
 package com.devoxx.watson.controller;
 
-import com.ibm.watson.developer_cloud.http.ServiceCall;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
@@ -75,8 +74,8 @@ class ProcessAudioFile {
         // get speech results
         LOGGER.log(Level.INFO, "get speech results for {0}", docName);
         try {
-            ServiceCall<SpeechResults> serviceCall = speechToText.recognize(audioFile, options);
-            speechResults = serviceCall.execute();
+            speechResults = speechToText.recognize(audioFile, options).execute();
+
             if (speechResults != null) {
                 LOGGER.log(Level.INFO, "got speech results (index={0})", speechResults.getResultIndex());
             }

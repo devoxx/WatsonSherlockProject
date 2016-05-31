@@ -3,7 +3,6 @@ package com.devoxx.watson.controller;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
-import com.ibm.watson.developer_cloud.http.ServiceCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,8 +46,7 @@ class ConceptInsightsService {
         newDocument.addParts(new Part("part_", text, HttpMediaType.TEXT_PLAIN));
 
         LOGGER.info("Create document");
-        final ServiceCall<Void> documentServiceCall = conceptInsights.createDocument(newDocument);
-        documentServiceCall.execute();
+        conceptInsights.createDocument(newDocument).execute();
     }
 
     /**
@@ -83,9 +81,8 @@ class ConceptInsightsService {
         final Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put(ConceptInsights.LIMIT, 20);
 
-        final ServiceCall<Documents> serviceCall = conceptInsights.listDocuments(corpus, queryParameters);
+        final Documents documents = conceptInsights.listDocuments(corpus, queryParameters).execute();
 
-        final Documents documents = serviceCall.execute();
         final List<String> documentList = documents.getDocuments();
 
         for (String id : documentList) {
@@ -95,9 +92,7 @@ class ConceptInsightsService {
                 Document doc = new Document();
                 doc.setId(id);
 
-                final ServiceCall<Document> documentServiceCall = conceptInsights.getDocument(doc);
-
-                return documentServiceCall.execute();
+                return conceptInsights.getDocument(doc).execute();
             }
         }
 
@@ -115,9 +110,7 @@ class ConceptInsightsService {
         final Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put(ConceptInsights.LIMIT,limit);
 
-        final ServiceCall<Documents> serviceCall = conceptInsights.listDocuments(corpus, queryParameters);
-
-        return serviceCall.execute();
+        return conceptInsights.listDocuments(corpus, queryParameters).execute();
     }
 
 
@@ -142,10 +135,9 @@ class ConceptInsightsService {
 
         searchGraphConceptByLabelParams.put(ConceptInsights.CONCEPT_FIELDS, concept_fields);
 
-        ServiceCall<Matches> serviceCall =
-                conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams);
-
-        final Matches matches = serviceCall.execute();
+        final Matches matches =
+                conceptInsights.searchGraphsConceptByLabel(Graph.WIKIPEDIA, searchGraphConceptByLabelParams)
+                               .execute();
 
         LOGGER.log(Level.INFO, "Found {0} matches", matches.getMatches().size());
 
@@ -166,10 +158,7 @@ class ConceptInsightsService {
         requestedFields.include("user_fields");
         parameters.put(ConceptInsights.DOCUMENT_FIELDS, requestedFields);
 
-        ServiceCall<QueryConcepts> conceptsServiceCall = conceptInsights.conceptualSearch(corpus, parameters);
-
-        // Synchronous call
-        final QueryConcepts queryConcepts = conceptsServiceCall.execute();
+        final QueryConcepts queryConcepts = conceptInsights.conceptualSearch(corpus, parameters).execute();
 
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
 
