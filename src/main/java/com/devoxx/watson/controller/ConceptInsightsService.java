@@ -69,7 +69,7 @@ class ConceptInsightsService {
             final Elements select = document.select("div.amp-wp-content p");
 
             if (select != null && !select.isEmpty()) {
-                createDocument(title, document.location(), select.text());
+                createDocument(title, hyperLink, select.text());
 
                 return document;
             }
@@ -83,7 +83,7 @@ class ConceptInsightsService {
      * @param label the document label is used to create the unique document identifier
      * @return true when document exists
      */
-    boolean documentExists(final String label) {
+    private boolean documentExists(final String label) {
 
         return findDocument(createDocumentId(label)) != null;
     }
