@@ -3,7 +3,6 @@ package com.devoxx.watson.controller;
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
-import com.devoxx.watson.util.SoupUtil;
 import com.devoxx.watson.util.UploadValidator;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,7 @@ class UploadController {
     @Autowired
     ConceptInsightsService conceptInsightsService;
 
+    @SuppressWarnings("unused")
     @InitBinder
     protected void initBinderFileBucket(WebDataBinder binder) {
         binder.setValidator(uploadValidator);

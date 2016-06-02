@@ -22,6 +22,7 @@ public class FileBucket {
         return docName;
     }
 
+    @SuppressWarnings("unused")
     public void setDocName(final String docName) {
         this.docName = docName;
     }

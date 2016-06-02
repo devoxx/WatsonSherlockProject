@@ -1,9 +1,5 @@
 package com.devoxx.watson.controller;
 
-/**
- * @author Stephan Janssen
- */
-
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,7 +28,7 @@ class ProcessAudioFileTimer {
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFileTimer.class.getName());
 
     // Scan every 15 seconds
-    @Scheduled(fixedDelay = 5000L)
+    @Scheduled(fixedDelay = 15000L)
     public void scanUploadDirectoryForNewAudioFiles() {
 
         File folder = new File(DevoxxWatsonInitializer.LOCATION);

@@ -25,7 +25,10 @@ import static java.lang.Math.abs;
 class ConceptInsightsService {
 
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
+
     private static final int MAX_DOCUMENTS_TO_SEARCH = 2000;
+    private static final int ONLY_USE_TWO_CONCEPTS = 2;
+    private static final int RETURN_ONLY_TEN_CONCEPTS = 10;
 
     @Autowired
     private ConceptInsights conceptInsights;
@@ -153,7 +156,7 @@ class ConceptInsightsService {
         Map<String, Object> searchGraphConceptByLabelParams = new HashMap<>();
         searchGraphConceptByLabelParams.put(ConceptInsights.QUERY, searchText);
         searchGraphConceptByLabelParams.put(ConceptInsights.PREFIX, true);
-        searchGraphConceptByLabelParams.put(ConceptInsights.LIMIT, 10);
+        searchGraphConceptByLabelParams.put(ConceptInsights.LIMIT, ONLY_USE_TWO_CONCEPTS);
 
         RequestedFields concept_fields = new RequestedFields();
         concept_fields.include("link");
@@ -178,7 +181,7 @@ class ConceptInsightsService {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ConceptInsights.IDS, ids);
-        parameters.put(ConceptInsights.LIMIT, 20);
+        parameters.put(ConceptInsights.LIMIT, RETURN_ONLY_TEN_CONCEPTS);
 
         RequestedFields requestedFields = new RequestedFields();
         requestedFields.include("user_fields");
@@ -188,6 +191,7 @@ class ConceptInsightsService {
 
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
 
-        return queryConcepts.getResults();
+        final List<Result> results = queryConcepts.getResults();
+        return results;
     }
 }
