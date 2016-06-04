@@ -84,6 +84,11 @@ class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public String alchemyApiKey() {
+        return env.getProperty("alchemy.apikey");
+    }
+
+    @Bean
     public Corpus getCorpus() {
         final ConceptInsights conceptInsights = conceptInsights();
         return new Corpus(conceptInsights.getFirstAccountId(), env.getProperty("corpus.name"));

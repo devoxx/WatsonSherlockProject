@@ -34,7 +34,8 @@ class ProcessAudioFile {
      */
     void execute(final File audioFile,
                  final String docName,
-                 final String link) {
+                 final String link,
+                 final String speakers) {
 
         this.docName = docName;
 
@@ -47,7 +48,7 @@ class ProcessAudioFile {
             stringBuilder.append(transcript.getAlternatives().get(0).getTranscript());
         }
 
-        conceptInsightsService.createDocument(docName, link, stringBuilder.toString());
+        conceptInsightsService.createDocument(docName, link, stringBuilder.toString(), speakers);
 
         if (audioFile.delete()) {
             LOGGER.log(Level.INFO, "File {0} removed", audioFile.getName());

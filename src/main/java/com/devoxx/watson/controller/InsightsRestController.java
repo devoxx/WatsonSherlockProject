@@ -1,5 +1,7 @@
 package com.devoxx.watson.controller;
 
+import com.devoxx.watson.model.AlchemyContent;
+import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,16 @@ class InsightsRestController {
 
     private ConceptInsightsService conceptInsightsService;
 
+    private AlchemyAPIService alchemyAPIService;
+
     @Autowired
     public void setConceptInsightsService(ConceptInsightsService conceptInsightsService) {
         this.conceptInsightsService = conceptInsightsService;
+    }
+
+    @Autowired
+    public void setAlchemyAPIService(final AlchemyAPIService alchemyAPIService) {
+        this.alchemyAPIService = alchemyAPIService;
     }
 
     /**
@@ -81,10 +90,15 @@ class InsightsRestController {
     @RequestMapping(value = "/article/", method = RequestMethod.POST)
     public ResponseEntity uploadArticleLink(@RequestParam("link") String link) {
 
-        final org.jsoup.nodes.Document doc = conceptInsightsService.createDocument(link);
 
-        if (doc != null) {
-            return new ResponseEntity<>(doc.title(), HttpStatus.CREATED);
+        final AlchemyContent content = alchemyAPIService.process(link);
+
+        content.setThumbnail(SoupUtil.getThumbnail(link));
+
+        conceptInsightsService.createDocument(content);
+
+        if (content.getTitle() != null) {
+            return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

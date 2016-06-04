@@ -17,14 +17,21 @@
 		
 			<div class="row">
 				<div class="form-group col-md-12">
-                    <label class="col-md-3 control-lable" for="file">Media name</label>
+                    <label class="col-md-3 control-lable" for="file">Presentation name</label>
                     <div class="col-md-7">
                         <form:input type="text" path="docName" id="name" class="form-control input-sm"/>
                         <div class="has-error">
                             <form:errors path="docName" class="help-inline"/>
                         </div>
                     </div>
-                    <label class="col-md-3 control-lable" for="file">YouTube Link</label>
+                    <label class="col-md-3 control-lable" for="file">Speaker(s)</label>
+					<div class="col-md-7">
+						<form:input type="text" path="speakers" id="name" class="form-control input-sm"/>
+						<div class="has-error">
+							<form:errors path="speakers" class="help-inline"/>
+						</div>
+					</div>
+					<label class="col-md-3 control-lable" for="file">YouTube link</label>
                     <div class="col-md-7">
                         <form:input type="text" path="link" id="name" class="form-control input-sm"/>
                         <div class="has-error">

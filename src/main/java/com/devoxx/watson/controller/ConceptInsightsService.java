@@ -1,10 +1,9 @@
 package com.devoxx.watson.controller;
 
-import com.devoxx.watson.util.SoupUtil;
+import com.devoxx.watson.model.AlchemyContent;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +14,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static java.lang.Math.abs;
 
 /**
  * @author Stephan Janssen
@@ -30,6 +27,15 @@ class ConceptInsightsService {
     private static final int ONLY_USE_TWO_CONCEPTS = 2;
     private static final int RETURN_ONLY_TEN_CONCEPTS = 10;
 
+    private static final String DEVOXX_PICTURE = "https://pbs.twimg.com/media/Ciph_FlWkAAF4D-.jpg";
+    private static final String USER_FIELD_THUMBNAIL = "thumbnail";
+    private static final String USER_FIELD_LINK = "link";
+    private static final String USER_FIELD_LANGUAGE = "language";
+    private static final String USER_FIELD_PUBLICATION_DATE = "publicationDate";
+    private static final String USER_FIELDS_AUTHORS = "authors";
+    private static final String USER_FIELDS_SENTIMENT = "sentiment";
+    private static final String USER_FIELD_EMOTIONS = "emotions";
+
     @Autowired
     private ConceptInsights conceptInsights;
 
@@ -37,17 +43,27 @@ class ConceptInsightsService {
     private Corpus corpus;
 
     /**
-     * Concept insights service.
+     * Create document for audio file.
+     *
+     * @param docName   the document name
+     * @param link      the YouTube link
+     * @param text      the transcript
+     * @param speakers  the speakers
      */
-    void createDocument(final String docName, final String link, final String text) {
+    void createDocument(final String docName,
+                        final String link,
+                        final String text,
+                        final String speakers) {
 
         LOGGER.log(Level.INFO, "create document for {0}", docName);
-        Document newDocument = new Document(corpus, createDocumentId(docName));
+        Document newDocument = new Document(corpus, String.valueOf(Math.abs(docName.hashCode())));
         newDocument.setName(docName);
         newDocument.setLabel(docName);
 
         final Map<String, String> userFields = new HashMap<>();
-        userFields.put("link", link);
+        userFields.put(USER_FIELD_LINK, link);
+        userFields.put(USER_FIELDS_AUTHORS, speakers);
+        userFields.put(USER_FIELD_THUMBNAIL, DEVOXX_PICTURE);   // Default thumbnail
         newDocument.setUserFields(userFields);
 
         newDocument.addParts(new Part("part_", text, HttpMediaType.TEXT_PLAIN));
@@ -57,50 +73,42 @@ class ConceptInsightsService {
     }
 
     /**
-     * Create a Insights document based on a hyper link.
+     * Create a Watson Corpus document.
      *
-     * @param hyperLink the hyperlink to an HTML article
+     * @param content the alchemy content
      */
-    org.jsoup.nodes.Document createDocument(final String hyperLink) {
+    void createDocument(final AlchemyContent content) {
 
-        final org.jsoup.nodes.Document document = SoupUtil.getDocument(hyperLink);
+        LOGGER.log(Level.INFO, "create document for {0}", content.getTitle());
 
-        String title = document.title();
+        Document newDocument = new Document(corpus, content.getId());
 
-        if (!documentExists(title)) {
+        newDocument.setName(content.getTitle());
+        newDocument.setLabel(content.getTitle());
 
-            final Elements select = document.select("div.amp-wp-content p");
+        final Map<String, String> userFields = new HashMap<>();
+        userFields.put(USER_FIELD_LINK, content.getLink());
 
-            if (select != null && !select.isEmpty()) {
-                createDocument(title, hyperLink, select.text());
-
-                return document;
-            }
+        if (content.getThumbnail().isEmpty()) {
+            userFields.put(USER_FIELD_THUMBNAIL, DEVOXX_PICTURE);
+        } else {
+            userFields.put(USER_FIELD_THUMBNAIL, content.getThumbnail());
         }
 
-        return null;
+        // Alchemy user fields
+        userFields.put(USER_FIELD_LANGUAGE, content.getLanguage());
+        userFields.put(USER_FIELD_PUBLICATION_DATE, content.getPublicationDate());
+        userFields.put(USER_FIELDS_AUTHORS, content.getAuthors());
+        userFields.put(USER_FIELDS_SENTIMENT, content.getSentiment());
+        userFields.put(USER_FIELD_EMOTIONS, content.getEmotions());
+
+        newDocument.setUserFields(userFields);
+        newDocument.addParts(new Part("part", content.getContent(), HttpMediaType.TEXT_PLAIN));
+
+        LOGGER.info("Create document");
+        conceptInsights.createDocument(newDocument).execute();
     }
 
-    /**
-     * Helper method
-     * @param label the document label is used to create the unique document identifier
-     * @return true when document exists
-     */
-    private boolean documentExists(final String label) {
-
-        return findDocument(createDocumentId(label)) != null;
-    }
-
-    /**
-     * Create a unique document identifier.
-     *
-     * @param docName   the document name
-     * @return a positive hashcode value
-     */
-    private String createDocumentId(String docName) {
-
-        return String.valueOf(abs(docName.hashCode()));
-    }
 
     /**
      * Find document by identifier.
@@ -191,7 +199,6 @@ class ConceptInsightsService {
 
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
 
-        final List<Result> results = queryConcepts.getResults();
-        return results;
+        return queryConcepts.getResults();
     }
 }

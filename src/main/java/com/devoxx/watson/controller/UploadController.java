@@ -1,10 +1,11 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
+import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
+import com.devoxx.watson.util.SoupUtil;
 import com.devoxx.watson.util.UploadValidator;
-import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,6 +34,9 @@ class UploadController {
 
     @Autowired
     ConceptInsightsService conceptInsightsService;
+
+    @Autowired
+    AlchemyAPIService alchemyAPIService;
 
     @SuppressWarnings("unused")
     @InitBinder
@@ -79,6 +83,7 @@ class UploadController {
             PrintWriter writer = new PrintWriter(txtFile, "UTF-8");
             writer.println(fileBucket.getLink());
             writer.println(fileBucket.getDocName());
+            writer.println(fileBucket.getSpeakers());
             writer.close();
 
             return "success";
@@ -103,10 +108,14 @@ class UploadController {
 
         } else {
 
-            Document doc = conceptInsightsService.createDocument(article.getLink());
+            final AlchemyContent content = alchemyAPIService.process(article.getLink());
 
-            if (doc != null) {
-                model.addAttribute("content", doc.title());
+            content.setThumbnail(SoupUtil.getThumbnail(article.getLink()));
+
+            conceptInsightsService.createDocument(content);
+
+            if (content.getTitle() != null) {
+                model.addAttribute("content", content.getTitle() + " - " + content.getId());
                 return "success";
             } else {
                 return "articleUploader";

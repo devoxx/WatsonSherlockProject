@@ -56,7 +56,7 @@ class ProcessAudioFileTimer {
                 List<String> content = getMetaFileContentAndRemove(file);
 
                 if (!content.isEmpty()) {
-                    processAudioFile.execute(file, content.get(1), content.get(0));
+                    processAudioFile.execute(file, content.get(1), content.get(0), content.get(2));
                 } else {
                     LOGGER.log(Level.FINER, "Already processed!");
                 }

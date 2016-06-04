@@ -10,6 +10,16 @@ public class FileBucket {
 
     private String docName;
 
+    private String speakers;
+
+    public String getSpeakers() {
+        return speakers;
+    }
+
+    public void setSpeakers(final String speakers) {
+        this.speakers = speakers;
+    }
+
     public String getLink() {
         return link;
     }

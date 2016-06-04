@@ -40,9 +40,10 @@ public class UploadValidator implements Validator {
             if (link != null) {
                 if (link.isEmpty()) {
                     errors.rejectValue("link", "missing.articlelink");
-                } else if (!link.toLowerCase().startsWith("https://www.voxxed.com")) {
-                    errors.rejectValue("link", "hostname.wrong");
                 }
+//                else if (!link.toLowerCase().startsWith("https://www.voxxed.com")) {
+//                    errors.rejectValue("link", "hostname.wrong");
+//                }
 
                 // Check if the link is a valid URL
                 try {
