@@ -108,14 +108,16 @@ class UploadController {
 
         } else {
 
-            final AlchemyContent content = alchemyAPIService.process(article.getLink());
+            final AlchemyContent alchemyContent = new AlchemyContent(article.getLink());
 
-            content.setThumbnail(SoupUtil.getThumbnail(article.getLink()));
+            alchemyAPIService.process(alchemyContent);
 
-            conceptInsightsService.createDocument(content);
+            alchemyContent.setThumbnail(SoupUtil.getThumbnail(article.getLink()));
 
-            if (content.getTitle() != null) {
-                model.addAttribute("content", content.getTitle() + " - " + content.getId());
+            conceptInsightsService.createDocument(alchemyContent);
+
+            if (alchemyContent.getTitle() != null) {
+                model.addAttribute("content", alchemyContent.getTitle() + " - " + alchemyContent.getId());
                 return "success";
             } else {
                 return "articleUploader";

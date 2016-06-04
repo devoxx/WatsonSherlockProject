@@ -90,17 +90,19 @@ class InsightsRestController {
     @RequestMapping(value = "/article/", method = RequestMethod.POST)
     public ResponseEntity uploadArticleLink(@RequestParam("link") String link) {
 
+        final AlchemyContent content = new AlchemyContent(link);
 
-        final AlchemyContent content = alchemyAPIService.process(link);
+        if (conceptInsightsService.findDocument(content.getId()) == null) {
 
-        content.setThumbnail(SoupUtil.getThumbnail(link));
+            alchemyAPIService.process(content);
 
-        conceptInsightsService.createDocument(content);
+            content.setThumbnail(SoupUtil.getThumbnail(link));
 
-        if (content.getTitle() != null) {
+            conceptInsightsService.createDocument(content);
+
             return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(content.getTitle(), HttpStatus.NOT_MODIFIED);
         }
     }
 }

@@ -33,8 +33,12 @@ public class AlchemyContent {
 
     private JsonObject emotions;
 
+    public AlchemyContent(String link) {
+        this.link = link;
+    }
+
     public String getId() {
-        return valueOf(abs(title.hashCode()));
+        return valueOf(abs(link.hashCode()));
     }
 
     public String getPublicationDate() {
