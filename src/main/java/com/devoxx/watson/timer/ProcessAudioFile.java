@@ -1,5 +1,6 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.timer;
 
+import com.devoxx.watson.service.ConceptInsightsService;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;

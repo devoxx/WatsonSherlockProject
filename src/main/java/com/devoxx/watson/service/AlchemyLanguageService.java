@@ -1,4 +1,4 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.service;
 
 import com.devoxx.watson.model.AlchemyContent;
 import com.google.gson.JsonElement;
@@ -17,9 +17,9 @@ import java.util.logging.Logger;
  * @author Stephan Janssen
  */
 @Component
-class AlchemyAPIService {
+public class AlchemyLanguageService {
 
-    private static final Logger LOGGER = Logger.getLogger(AlchemyAPIService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AlchemyLanguageService.class.getName());
 
     private static final String PUBLICATION_DATE = "publicationDate";
     private static final String LANGUAGE = "language";
@@ -35,7 +35,7 @@ class AlchemyAPIService {
         this.apikey = apikey;
     }
 
-    void process(final AlchemyContent alchemyContent) {
+    public void process(final AlchemyContent alchemyContent) {
 
         try {
             final String articleText = getArticleText(alchemyContent.getLink());

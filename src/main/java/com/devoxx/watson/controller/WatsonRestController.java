@@ -1,9 +1,9 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.model.AlchemyContent;
-import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
+import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,21 +17,10 @@ import java.util.List;
  */
 @RequestMapping("/api/")
 @RestController
-class InsightsRestController {
-
-    private ConceptInsightsService conceptInsightsService;
-
-    private AlchemyAPIService alchemyAPIService;
+class WatsonRestController {
 
     @Autowired
-    public void setConceptInsightsService(ConceptInsightsService conceptInsightsService) {
-        this.conceptInsightsService = conceptInsightsService;
-    }
-
-    @Autowired
-    public void setAlchemyAPIService(final AlchemyAPIService alchemyAPIService) {
-        this.alchemyAPIService = alchemyAPIService;
-    }
+    private WatsonController watsonController;
 
     /**
      * Search Watson Insights.
@@ -42,9 +31,9 @@ class InsightsRestController {
     @RequestMapping(value = "/search/{value}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity searchInsights(@PathVariable("value") String searchText) {
+    public ResponseEntity searchInsights(@PathVariable("value") @NotNull String searchText) {
 
-        final List<Result> results = conceptInsightsService.searchDocuments(searchText);
+        final List<Result> results = watsonController.searchDocuments(searchText);
 
         if (results == null) {
             return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
@@ -64,7 +53,7 @@ class InsightsRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getDocuments(@RequestParam(value = "limit", required = false, defaultValue = "20") int limit) {
 
-        return new ResponseEntity<>(conceptInsightsService.getAllDocuments(limit), HttpStatus.OK);
+        return new ResponseEntity<>(watsonController.getAllDocuments(limit), HttpStatus.OK);
     }
 
     /**
@@ -76,9 +65,9 @@ class InsightsRestController {
     @RequestMapping(value = "/document/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getDocument(@PathVariable("id") String documentId) {
+    public ResponseEntity getDocument(@PathVariable("id") @NotNull String documentId) {
 
-        final Document foundDocument = conceptInsightsService.findDocument(documentId);
+        final Document foundDocument = watsonController.findDocument(documentId);
 
         if (foundDocument == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -90,19 +79,13 @@ class InsightsRestController {
     @RequestMapping(value = "/article/", method = RequestMethod.POST)
     public ResponseEntity uploadArticleLink(@RequestParam("link") String link) {
 
-        final AlchemyContent content = new AlchemyContent(link);
-
-        if (conceptInsightsService.findDocument(content.getId()) == null) {
-
-            alchemyAPIService.process(content);
-
-            content.setThumbnail(SoupUtil.getThumbnail(link));
-
-            conceptInsightsService.createDocument(content);
+        try {
+            final AlchemyContent content = watsonController.processLink(link);
 
             return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(content.getTitle(), HttpStatus.NOT_MODIFIED);
+        } catch (DocumentAlreadyExistsException e) {
+            return new ResponseEntity<>(link, HttpStatus.NOT_MODIFIED);
         }
+
     }
 }

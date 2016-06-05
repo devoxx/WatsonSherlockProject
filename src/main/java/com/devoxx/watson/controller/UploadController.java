@@ -1,10 +1,8 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
-import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
-import com.devoxx.watson.util.SoupUtil;
 import com.devoxx.watson.util.UploadValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +22,11 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The article and audio upload controller.
+ *
+ * @author Stephan Janssen
+ */
 @Controller
 class UploadController {
 
@@ -33,10 +36,7 @@ class UploadController {
     UploadValidator uploadValidator;
 
     @Autowired
-    ConceptInsightsService conceptInsightsService;
-
-    @Autowired
-    AlchemyAPIService alchemyAPIService;
+    WatsonController watsonController;
 
     @SuppressWarnings("unused")
     @InitBinder
@@ -108,18 +108,11 @@ class UploadController {
 
         } else {
 
-            final AlchemyContent alchemyContent = new AlchemyContent(article.getLink());
-
-            alchemyAPIService.process(alchemyContent);
-
-            alchemyContent.setThumbnail(SoupUtil.getThumbnail(article.getLink()));
-
-            conceptInsightsService.createDocument(alchemyContent);
-
-            if (alchemyContent.getTitle() != null) {
-                model.addAttribute("content", alchemyContent.getTitle() + " - " + alchemyContent.getId());
+            try {
+                watsonController.processLink(article.getLink());
                 return "success";
-            } else {
+
+            } catch (DocumentAlreadyExistsException e) {
                 return "articleUploader";
             }
         }

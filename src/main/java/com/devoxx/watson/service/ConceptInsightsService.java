@@ -1,4 +1,4 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.service;
 
 import com.devoxx.watson.model.AlchemyContent;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  * @author Stephan Janssen
  */
 @Component
-class ConceptInsightsService {
+public class ConceptInsightsService {
 
-    private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConceptInsightsService.class.getName());
 
     private static final int MAX_DOCUMENTS_TO_SEARCH = 2000;
     private static final int ONLY_USE_TWO_CONCEPTS = 2;
@@ -50,7 +50,7 @@ class ConceptInsightsService {
      * @param text      the transcript
      * @param speakers  the speakers
      */
-    void createDocument(final String docName,
+    public void createDocument(final String docName,
                         final String link,
                         final String text,
                         final String speakers) {
@@ -77,7 +77,7 @@ class ConceptInsightsService {
      *
      * @param content the alchemy content
      */
-    void createDocument(final AlchemyContent content) {
+    public void createDocument(final AlchemyContent content) {
 
         LOGGER.log(Level.INFO, "create document for {0}", content.getTitle());
 
@@ -116,7 +116,7 @@ class ConceptInsightsService {
      * @param documentId    the document id
      * @return the related document
      */
-    Document findDocument(final String documentId) {
+    public Document findDocument(final String documentId) {
 
         final Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put(ConceptInsights.LIMIT, MAX_DOCUMENTS_TO_SEARCH);
@@ -142,7 +142,7 @@ class ConceptInsightsService {
      * @param limit the limit to return
      * @return list of documents
      */
-    Documents getAllDocuments(int limit) {
+    public Documents getAllDocuments(int limit) {
 
         final Map<String, Object> queryParameters = new HashMap<>();
         queryParameters.put(ConceptInsights.LIMIT,limit);
@@ -157,7 +157,7 @@ class ConceptInsightsService {
      * @param searchText    the search text
      * @return list of documents
      */
-    List<Result> searchDocuments(final String searchText) {
+    public List<Result> searchDocuments(final String searchText) {
 
         LOGGER.log(Level.INFO, "Label search for \"{0}\"", searchText);
 

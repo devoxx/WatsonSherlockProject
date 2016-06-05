@@ -1,4 +1,4 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.timer;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
