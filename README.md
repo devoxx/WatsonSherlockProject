@@ -1,7 +1,7 @@
-The Devoxx Watson audio project
-==============
+The DeVoxxEd Watson project
+=================================
 
-This Devoxx IBM Watson project allows you to upload audio files which are converted to text and added to the Watson Concept Insights for queries.
+This DeVoxxEd IBM Watson project allows you to upload audio files and articles which are processed by different Watson services like Concept Insights, Speech to Text and Alchemy Language. 
 
 ## Running the Application Locally in Eclipse with Liberty
 
