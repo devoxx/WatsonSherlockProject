@@ -33,6 +33,8 @@ public class AlchemyContent {
 
     private JsonObject emotions;
 
+    private String thumbnailKeywords;
+
     public AlchemyContent(String link) {
         this.link = link;
     }
@@ -137,5 +139,13 @@ public class AlchemyContent {
 
     public void setEmotions(final JsonObject emotions) {
         this.emotions = emotions;
+    }
+
+    public String getThumbnailKeywords() {
+        return thumbnailKeywords;
+    }
+
+    public void setThumbnailKeywords(final String thumbnailKeywords) {
+        this.thumbnailKeywords = thumbnailKeywords;
     }
 }

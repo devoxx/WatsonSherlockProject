@@ -112,7 +112,7 @@ class UploadController {
                 watsonController.processLink(article.getLink());
                 return "success";
 
-            } catch (DocumentAlreadyExistsException e) {
+            } catch (DocumentAlreadyExistsException | DocumentThumbnailKeywordsException e) {
                 return "articleUploader";
             }
         }

@@ -10,7 +10,12 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
+import static com.devoxx.watson.service.ConceptInsightsService.USER_FIELD_THUMBNAIL;
+import static com.devoxx.watson.service.ConceptInsightsService.USER_FIELD_THUMBNAIL_KEYWORDS;
 
 /**
  * @author Stephan Janssen
@@ -28,24 +33,48 @@ public class WatsonController {
      * Process an article or video link.
      *
      * @param link the article or presentation link
+     * @throws DocumentAlreadyExistsException
+     * @throws DocumentThumbnailKeywordsException
      * @return the alchemy content
      */
-    AlchemyContent processLink(final String link) throws DocumentAlreadyExistsException {
+    AlchemyContent processLink(final String link)
+            throws DocumentAlreadyExistsException, DocumentThumbnailKeywordsException {
 
         final AlchemyContent content = new AlchemyContent(link);
 
-        if (conceptInsightsService.findDocument(content.getId()) == null) {
+        final Document document = conceptInsightsService.findDocument(content.getId());
 
-            alchemyLanguageService.process(content);
+        if (document == null) {
 
             content.setThumbnail(SoupUtil.getThumbnail(link));
+
+            alchemyLanguageService.process(content);
 
             conceptInsightsService.createDocument(content);
 
             return content;
+
+        }
+
+        // Does document have thumbnail keywords?
+        final Map<String, String> userFields = document.getUserFields();
+
+        if (!userFields.containsKey(USER_FIELD_THUMBNAIL_KEYWORDS)) {
+            try {
+                final String thumbnailKeywords = alchemyLanguageService.getThumbnailKeywords(userFields.get(USER_FIELD_THUMBNAIL));
+
+                userFields.put(USER_FIELD_THUMBNAIL_KEYWORDS, thumbnailKeywords);
+
+                conceptInsightsService.updateDocument(document);
+
+            } catch (IOException e) {
+                throw new DocumentThumbnailKeywordsException();
+            }
         } else {
             throw new DocumentAlreadyExistsException();
         }
+
+        return content;
     }
 
     /**

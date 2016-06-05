@@ -1,6 +1,7 @@
 package com.devoxx.watson.service;
 
 import com.devoxx.watson.model.AlchemyContent;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -28,6 +29,17 @@ public class AlchemyLanguageService {
     private static final String TITLE = "title";
     private static final String DOC_EMOTIONS = "docEmotions";
 
+    // Alchemy Language REST endpoints
+    private static final String URLGET_RANKED_IMAGE_KEYWORDS = "https://gateway-a.watsonplatform.net/calls/url/URLGetRankedImageKeywords";
+    private static final String URLGET_TEXT = "https://gateway-a.watsonplatform.net/calls/url/URLGetText";
+    private static final String URLGET_COMBINED_DATA = "https://gateway-a.watsonplatform.net/calls/url/URLGetCombinedData";
+
+    // Alchemy Language REST parameters
+    private static final String APIKEY = "apikey";
+    private static final String URL = "url";
+    private static final String OUTPUT_MODE = "outputMode";
+    private static final String JSON = "json";
+
     private String apikey;
 
     @Autowired
@@ -35,29 +47,29 @@ public class AlchemyLanguageService {
         this.apikey = apikey;
     }
 
-    public void process(final AlchemyContent alchemyContent) {
+    public void process(final AlchemyContent content) {
 
         try {
-            final String articleText = getArticleText(alchemyContent.getLink());
+            final String articleText = getArticleText(content.getLink());
 
             if (articleText != null && !articleText.isEmpty()) {
-                alchemyContent.setContent(articleText);
+                content.setContent(articleText);
 
-                JsonElement jsonElement = getAlchemyData(alchemyContent.getLink());
+                final JsonObject json = getAlchemyData(content.getLink()).getAsJsonObject();
 
-                final JsonObject jsonObject = jsonElement.getAsJsonObject();
+                content.setTitle(json.get(TITLE).getAsString());
 
-                alchemyContent.setTitle(jsonObject.get(TITLE).getAsString());
+                content.setPublicationDate(json.get(PUBLICATION_DATE).getAsJsonObject().get("date").getAsString());
 
-                alchemyContent.setPublicationDate(jsonObject.get(PUBLICATION_DATE).getAsJsonObject().get("date").getAsString());
+                content.setLanguage(json.get(LANGUAGE).getAsString());
 
-                alchemyContent.setLanguage(jsonObject.get(LANGUAGE).getAsString());
+                content.setAuthors(json.get(AUTHORS).getAsJsonObject().get("names").getAsString());
 
-                alchemyContent.setAuthors(jsonObject.get(AUTHORS).getAsJsonObject().get("names").getAsString());
+                content.setSentiment(json.get(DOC_SENTIMENT).getAsJsonObject().get("type").getAsString());
 
-                alchemyContent.setSentiment(jsonObject.get(DOC_SENTIMENT).getAsJsonObject().get("type").getAsString());
+                content.setEmotions(json.get(DOC_EMOTIONS).getAsJsonObject());
 
-                alchemyContent.setEmotions(jsonObject.get(DOC_EMOTIONS).getAsJsonObject());
+                content.setThumbnailKeywords(getThumbnailKeywords(content.getThumbnail()));
             }
         } catch (IOException e) {
             LOGGER.severe(e.toString());
@@ -76,13 +88,13 @@ public class AlchemyLanguageService {
      */
     private JsonElement getAlchemyData(final String articleURL) throws IOException {
         final Document doc =
-                   Jsoup.connect("https://gateway-a.watsonplatform.net/calls/url/URLGetCombinedData")
+                   Jsoup.connect(URLGET_COMBINED_DATA)
                         .timeout(15000)
                         .method(Connection.Method.POST)
-                        .data("apikey", apikey)
-                        .data("outputMode", "json")
+                        .data(APIKEY, apikey)
+                        .data(OUTPUT_MODE, JSON)
                         .data("extract", "authors, doc-emotion, pub-date, doc-sentiment, title")
-                        .data("url", articleURL)
+                        .data(URL, articleURL)
                         .ignoreContentType(true)
                         .execute()
                         .parse();
@@ -102,12 +114,12 @@ public class AlchemyLanguageService {
      */
     private String getArticleText(final String articleURL) throws IOException {
         final Document doc =
-                Jsoup.connect("https://gateway-a.watsonplatform.net/calls/url/URLGetText")
+                Jsoup.connect(URLGET_TEXT)
                         .timeout(15000)
                         .method(Connection.Method.POST)
-                        .data("apikey", apikey)
-                        .data("outputMode", "json")
-                        .data("url", articleURL)
+                        .data(APIKEY, apikey)
+                        .data(OUTPUT_MODE, JSON)
+                        .data(URL, articleURL)
                         .ignoreContentType(true)
                         .execute()
                         .parse();
@@ -117,6 +129,39 @@ public class AlchemyLanguageService {
             return parse.getAsJsonObject().get("text").getAsString();
         } else {
             return null;
+        }
+    }
+
+    /**
+     *
+     * curl "https://gateway-a.watsonplatform.net/calls/url/URLGetRankedImageKeywords?url=http://www.edisonmuckers.org/fun-facts-about-tom&
+     * outputMode=json&apikey=key"
+     *
+     * @param thumbnailURL the thumbnail URL
+     * @return list of keyw
+     * ords
+     */
+    public String getThumbnailKeywords(final String thumbnailURL) throws IOException {
+        final Document doc = Jsoup.connect(URLGET_RANKED_IMAGE_KEYWORDS)
+                                  .timeout(15000)
+                                  .method(Connection.Method.GET)
+                                  .data(APIKEY, apikey)
+                                  .data(URL, thumbnailURL)
+                                  .data(OUTPUT_MODE, JSON)
+                                  .ignoreContentType(true)
+                                  .execute()
+                                  .parse();
+
+        LOGGER.info(doc.text());
+
+        final JsonElement element = new JsonParser().parse(doc.text());
+
+        final JsonArray imageKeywords = element.getAsJsonObject().get("imageKeywords").getAsJsonArray();
+
+        if (imageKeywords.size() > 0) {
+            return imageKeywords.get(0).getAsJsonObject().get("text").getAsString();
+        } else {
+            return "no results";
         }
     }
 }

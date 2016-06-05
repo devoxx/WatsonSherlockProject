@@ -83,7 +83,7 @@ class WatsonRestController {
             final AlchemyContent content = watsonController.processLink(link);
 
             return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
-        } catch (DocumentAlreadyExistsException e) {
+        } catch (DocumentAlreadyExistsException | DocumentThumbnailKeywordsException e) {
             return new ResponseEntity<>(link, HttpStatus.NOT_MODIFIED);
         }
 

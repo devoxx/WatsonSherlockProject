@@ -28,13 +28,15 @@ public class ConceptInsightsService {
     private static final int RETURN_ONLY_TEN_CONCEPTS = 10;
 
     private static final String DEVOXX_PICTURE = "https://pbs.twimg.com/media/Ciph_FlWkAAF4D-.jpg";
-    private static final String USER_FIELD_THUMBNAIL = "thumbnail";
+
     private static final String USER_FIELD_LINK = "link";
     private static final String USER_FIELD_LANGUAGE = "language";
     private static final String USER_FIELD_PUBLICATION_DATE = "publicationDate";
     private static final String USER_FIELDS_AUTHORS = "authors";
     private static final String USER_FIELDS_SENTIMENT = "sentiment";
     private static final String USER_FIELD_EMOTIONS = "emotions";
+    public static final String USER_FIELD_THUMBNAIL = "thumbnail";
+    public static final String USER_FIELD_THUMBNAIL_KEYWORDS = "thumbnailKeywords";
 
     @Autowired
     private ConceptInsights conceptInsights;
@@ -101,6 +103,7 @@ public class ConceptInsightsService {
         userFields.put(USER_FIELDS_AUTHORS, content.getAuthors());
         userFields.put(USER_FIELDS_SENTIMENT, content.getSentiment());
         userFields.put(USER_FIELD_EMOTIONS, content.getEmotions());
+        userFields.put(USER_FIELD_THUMBNAIL_KEYWORDS, content.getThumbnailKeywords());
 
         newDocument.setUserFields(userFields);
         newDocument.addParts(new Part("part", content.getContent(), HttpMediaType.TEXT_PLAIN));
@@ -148,6 +151,16 @@ public class ConceptInsightsService {
         queryParameters.put(ConceptInsights.LIMIT,limit);
 
         return conceptInsights.listDocuments(corpus, queryParameters).execute();
+    }
+
+
+    /**
+     * Update an existing document.
+     *
+     * @param document  the updated document
+     */
+    public void updateDocument(final Document document) {
+        conceptInsights.updateDocument(document).execute();
     }
 
 
