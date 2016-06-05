@@ -12,6 +12,6 @@ public class AlchemyContentTest {
 
         final AlchemyContent alchemyContent = new AlchemyContent("link");
         alchemyContent.setPublicationDate("20160112T000000");
-        assert(alchemyContent.getPublicationDate().equals("12 Jan 2016"));
+        assert(alchemyContent.getPublicationDate().equals("January 12 '16"));
     }
 }

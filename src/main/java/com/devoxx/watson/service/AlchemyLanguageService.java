@@ -40,7 +40,7 @@ public class AlchemyLanguageService {
         try {
             final String articleText = getArticleText(alchemyContent.getLink());
 
-            if (articleText != null) {
+            if (articleText != null && !articleText.isEmpty()) {
                 alchemyContent.setContent(articleText);
 
                 JsonElement jsonElement = getAlchemyData(alchemyContent.getLink());

@@ -1,13 +1,12 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.service;
 
 import com.devoxx.watson.model.AlchemyContent;
-import com.devoxx.watson.service.AlchemyLanguageService;
 import org.junit.Test;
 
 /**
  * @author Stephan Janssen
  */
-public class AlchemyAPIServiceTest {
+public class AlchemyLanguageServiceTest {
 
     @Test
     public void process() {

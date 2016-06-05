@@ -1,4 +1,4 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.service;
 
 import org.junit.Test;
 
