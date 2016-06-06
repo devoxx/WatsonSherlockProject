@@ -3,7 +3,6 @@ package com.devoxx.watson.controller;
 import com.devoxx.watson.model.AlchemyContent;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
-import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +30,7 @@ class WatsonRestController {
     @RequestMapping(value = "/search/{value}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity searchInsights(@PathVariable("value") @NotNull String searchText) {
+    public ResponseEntity searchInsights(@PathVariable("value") String searchText) {
 
         final List<Result> results = watsonController.searchDocuments(searchText);
 
@@ -65,7 +64,7 @@ class WatsonRestController {
     @RequestMapping(value = "/document/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getDocument(@PathVariable("id") @NotNull String documentId) {
+    public ResponseEntity getDocument(@PathVariable("id") String documentId) {
 
         final Document foundDocument = watsonController.findDocument(documentId);
 
