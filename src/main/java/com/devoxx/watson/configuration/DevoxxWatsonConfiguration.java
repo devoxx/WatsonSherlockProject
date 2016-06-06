@@ -2,6 +2,7 @@ package com.devoxx.watson.configuration;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
+import com.ibm.watson.developer_cloud.language_translation.v2.LanguageTranslation;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -71,6 +72,15 @@ class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
         String password = env.getProperty("speech.password");
         speechToText.setUsernameAndPassword(username, password);
         return speechToText;
+    }
+
+    @Bean
+    public LanguageTranslation languageTranslation() {
+        LanguageTranslation languageTranslation = new LanguageTranslation();
+        String username = env.getProperty("translate.username");
+        String password = env.getProperty("translate.password");
+        languageTranslation.setUsernameAndPassword(username, password);
+        return languageTranslation;
     }
 
     @Bean

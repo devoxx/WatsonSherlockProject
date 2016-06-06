@@ -3,6 +3,8 @@ package com.devoxx.watson.controller;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.service.AlchemyLanguageService;
 import com.devoxx.watson.service.ConceptInsightsService;
+import com.devoxx.watson.service.SpeechToTextException;
+import com.devoxx.watson.service.SpeechToTextService;
 import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Documents;
@@ -10,6 +12,8 @@ import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +32,9 @@ public class WatsonController {
 
     @Autowired
     AlchemyLanguageService alchemyLanguageService;
+
+    @Autowired
+    SpeechToTextService speechToTextService;
 
     /**
      * Process an article or video link.
@@ -113,5 +120,33 @@ public class WatsonController {
         } else {
             return conceptInsightsService.findDocument(documentId);
         }
+    }
+
+    /**
+     * Process speech to text.
+     *
+     * @param audioFile the audio file
+     * @param docName   the doc name
+     * @return returns the transcript
+     */
+    public String processSpeechToText(final @NotNull File audioFile, final @NotNull String docName)
+            throws SpeechToTextException {
+
+        return speechToTextService.processAudioFile(audioFile, docName);
+    }
+
+    /**
+     * Create an audio based Corpus document.
+     *
+     * @param docName the document name
+     * @param link    the youtube link
+     * @param transcript the audio transcript
+     */
+    public void createAudioDocument(final String docName,
+                                    final String link,
+                                    final String transcript,
+                                    final String speakers) {
+
+        conceptInsightsService.createDocument(docName, link, transcript, speakers);
     }
 }

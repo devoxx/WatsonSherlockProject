@@ -50,7 +50,7 @@ class ProcessAudioFileTimer {
         File[] listOfFiles = folder.listFiles(filenameFilter);
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
-                // process file
+                // processAudioFile file
                 LOGGER.log(Level.FINE, "Processing {0}", file.getName());
 
                 List<String> content = getMetaFileContentAndRemove(file);

@@ -1,10 +1,7 @@
 package com.devoxx.watson.timer;
 
-import com.devoxx.watson.service.ConceptInsightsService;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.Transcript;
+import com.devoxx.watson.controller.WatsonController;
+import com.devoxx.watson.service.SpeechToTextException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,70 +18,31 @@ class ProcessAudioFile {
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
 
     @Autowired
-    private ConceptInsightsService conceptInsightsService;
-
-    @Autowired
-    private SpeechToText speechToText;
-
-    private String docName;
+    private WatsonController watsonController;
 
     /**
-     * Process the audio file asynchronously.
+     * Process the audio file.
      *
-     * @param audioFile     the audio file
+     * @param audioFile the audio file
+     * @param docName   the document name
+     * @param link      the YouTube link
+     * @param speakers  the speaker(s)
      */
     void execute(final File audioFile,
                  final String docName,
                  final String link,
                  final String speakers) {
-
-        this.docName = docName;
-
-        // Start speech to text process
-        SpeechResults speechResults = processSpeechToText(audioFile);
-
-        LOGGER.info("Add speech results into document");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Transcript transcript : speechResults.getResults()) {
-            stringBuilder.append(transcript.getAlternatives().get(0).getTranscript());
-        }
-
-        conceptInsightsService.createDocument(docName, link, stringBuilder.toString(), speakers);
-
-        if (audioFile.delete()) {
-            LOGGER.log(Level.INFO, "File {0} removed", audioFile.getName());
-        }
-    }
-
-    /**
-     * Start speech to text process.
-     *
-     * @param audioFile the audio file
-     */
-    private SpeechResults processSpeechToText(final File audioFile) {
-        LOGGER.log(Level.INFO, "process speech to text service for {0}", docName);
-
-        final RecognizeOptions options = new RecognizeOptions
-                .Builder()
-                .contentType("audio/ogg")
-                .continuous(true)
-                .interimResults(false)
-                .build();
-
-        SpeechResults speechResults = null;
-
-        // get speech results
-        LOGGER.log(Level.INFO, "get speech results for {0}", docName);
         try {
-            speechResults = speechToText.recognize(audioFile, options).execute();
+            String transcript = watsonController.processSpeechToText(audioFile, docName);
 
-            if (speechResults != null) {
-                LOGGER.log(Level.INFO, "got speech results (index={0})", speechResults.getResultIndex());
+            watsonController.createAudioDocument(docName, link, transcript, speakers);
+
+            if (audioFile.delete()) {
+                LOGGER.log(Level.INFO, "File {0} removed", audioFile.getName());
             }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getCause().toString());
-        }
 
-        return speechResults;
+        } catch (SpeechToTextException e) {
+            LOGGER.severe(e.toString());
+        }
     }
 }

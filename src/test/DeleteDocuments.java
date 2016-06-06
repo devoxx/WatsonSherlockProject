@@ -133,7 +133,7 @@ public class DeleteDocuments {
 
             System.out.println(cmd);
 
-            // wait for 10 seconds and then destroy the process
+            // wait for 10 seconds and then destroy the processAudioFile
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
