@@ -19,6 +19,30 @@ This DeVoxxEd IBM Watson project allows you to upload audio files and articles w
 4. Deploy the project into Bluemix server. 
 
 
+## Watson service api-keys
+
+You need to create an application.properties file in /src/main/resources with the following content and Watson api-keys
+
+~~~~ 
+# Speech to text credentials
+speech.username=<ADD YOUR CREDENTIALS FOR SPEECH>
+speech.password=<ADD YOUR CREDENTIALS FOR SPEECH>
+
+#ConceptInsights credentials
+insight.username=<ADD YOUR CREDENTIALS FOR CONCEPT INSIGHTS>
+insight.password=<ADD YOUR CREDENTIALS FOR CONCEPT INSIGHTS>
+
+# Translation credentials
+translate.username=<ADD YOUR CREDENTIALS FOR TRANSLATE>
+translate.password=<ADD YOUR CREDENTIALS FOR TRANSLATE>
+
+# Please don't change this 'sandbox' corpus name
+corpus.name=devoxx_sandbox_corpus
+
+#Alchemy credentials
+alchemy.apikey=<ADD YOUR API-KEY FOR ALCHEMY>
+~~~~ 
+
 ## Running with Maven
 
 This project can be build with [Apache Maven](http://maven.apache.org/). The project uses [Liberty Maven Plug-in][] to automatically download and install Liberty profile runtime from the [Liberty repository](https://developer.ibm.com/wasdev/downloads/). Liberty Maven Plug-in is also used to create, configure, and run the application on the Liberty server. 
