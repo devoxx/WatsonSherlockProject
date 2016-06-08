@@ -79,12 +79,19 @@ class WatsonRestController {
     public ResponseEntity uploadArticleLink(@RequestParam("link") String link) {
 
         try {
+
             final AlchemyContent content = watsonController.processLink(link);
 
             return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
-        } catch (DocumentAlreadyExistsException | DocumentThumbnailKeywordsException e) {
-            return new ResponseEntity<>(link, HttpStatus.NOT_MODIFIED);
-        }
 
+        } catch (DocumentAlreadyExistsException |
+                 DocumentThumbnailKeywordsException e) {
+
+            return new ResponseEntity<>(link, HttpStatus.NOT_MODIFIED);
+
+        } catch (ArticleTextExtractionException e) {
+
+            return new ResponseEntity<>(link, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

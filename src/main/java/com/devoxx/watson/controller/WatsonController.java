@@ -45,7 +45,9 @@ public class WatsonController {
      * @return the alchemy content
      */
     AlchemyContent processLink(final String link)
-            throws DocumentAlreadyExistsException, DocumentThumbnailKeywordsException {
+            throws DocumentAlreadyExistsException,
+                   DocumentThumbnailKeywordsException,
+                   ArticleTextExtractionException {
 
         final AlchemyContent content = new AlchemyContent(link);
 
@@ -54,6 +56,8 @@ public class WatsonController {
         if (document == null) {
 
             content.setThumbnail(SoupUtil.getThumbnail(link));
+
+            content.setContent(alchemyLanguageService.getArticleText(link));
 
             alchemyLanguageService.process(content);
 
@@ -64,6 +68,7 @@ public class WatsonController {
         }
 
         // Does document have thumbnail keywords?
+        // This piece of code was introduced for existing Watson documents which had no thumbnail processing
         final Map<String, String> userFields = document.getUserFields();
 
         if (!userFields.containsKey(USER_FIELD_THUMBNAIL_KEYWORDS)) {
@@ -147,6 +152,13 @@ public class WatsonController {
                                     final String transcript,
                                     final String speakers) {
 
-        conceptInsightsService.createDocument(docName, link, transcript, speakers);
+        final AlchemyContent content = new AlchemyContent(link);
+        content.setAuthors(speakers);
+        content.setTitle(docName);
+        content.setContent(transcript);
+
+        alchemyLanguageService.process(content);
+
+        conceptInsightsService.createDocument(content);
     }
 }

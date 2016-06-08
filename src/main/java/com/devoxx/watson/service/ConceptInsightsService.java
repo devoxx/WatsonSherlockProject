@@ -45,36 +45,6 @@ public class ConceptInsightsService {
     private Corpus corpus;
 
     /**
-     * Create document for audio file.
-     *
-     * @param docName   the document name
-     * @param link      the YouTube link
-     * @param text      the transcript
-     * @param speakers  the speakers
-     */
-    public void createDocument(final String docName,
-                        final String link,
-                        final String text,
-                        final String speakers) {
-
-        LOGGER.log(Level.INFO, "create document for {0}", docName);
-        Document newDocument = new Document(corpus, String.valueOf(Math.abs(docName.hashCode())));
-        newDocument.setName(docName);
-        newDocument.setLabel(docName);
-
-        final Map<String, String> userFields = new HashMap<>();
-        userFields.put(USER_FIELD_LINK, link);
-        userFields.put(USER_FIELDS_AUTHORS, speakers);
-        userFields.put(USER_FIELD_THUMBNAIL, DEVOXX_PICTURE);   // Default thumbnail
-        newDocument.setUserFields(userFields);
-
-        newDocument.addParts(new Part("part_", text, HttpMediaType.TEXT_PLAIN));
-
-        LOGGER.info("Create document");
-        conceptInsights.createDocument(newDocument).execute();
-    }
-
-    /**
      * Create a Watson Corpus document.
      *
      * @param content the alchemy content
@@ -91,19 +61,30 @@ public class ConceptInsightsService {
         final Map<String, String> userFields = new HashMap<>();
         userFields.put(USER_FIELD_LINK, content.getLink());
 
-        if (content.getThumbnail().isEmpty()) {
+        if (content.getThumbnail() == null ||
+            content.getThumbnail().isEmpty()) {
             userFields.put(USER_FIELD_THUMBNAIL, DEVOXX_PICTURE);
         } else {
             userFields.put(USER_FIELD_THUMBNAIL, content.getThumbnail());
         }
 
         // Alchemy user fields
-        userFields.put(USER_FIELD_LANGUAGE, content.getLanguage());
-        userFields.put(USER_FIELD_PUBLICATION_DATE, content.getPublicationDate());
+        if (!content.getLanguage().isEmpty()) {
+            userFields.put(USER_FIELD_LANGUAGE, content.getLanguage());
+        }
+
+        if (content.getPublicationDate() != null) {
+            userFields.put(USER_FIELD_PUBLICATION_DATE, content.getPublicationDate());
+        }
+
         userFields.put(USER_FIELDS_AUTHORS, content.getAuthors());
         userFields.put(USER_FIELDS_SENTIMENT, content.getSentiment());
         userFields.put(USER_FIELD_EMOTIONS, content.getEmotions());
-        userFields.put(USER_FIELD_THUMBNAIL_KEYWORDS, content.getThumbnailKeywords());
+
+        if (content.getThumbnailKeywords() != null &&
+            !content.getThumbnailKeywords().isEmpty()) {
+            userFields.put(USER_FIELD_THUMBNAIL_KEYWORDS, content.getThumbnailKeywords());
+        }
 
         newDocument.setUserFields(userFields);
         newDocument.addParts(new Part("part", content.getContent(), HttpMediaType.TEXT_PLAIN));

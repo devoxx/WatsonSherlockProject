@@ -39,6 +39,13 @@ public class SpeechToTextService {
 
         LOGGER.log(Level.INFO, "processAudioFile speech to text service for {0}", docName);
 
+// TODO - Try this
+//        curl -X POST -u <username>:<password>
+//                --header "Content-Type: audio/flac"
+//                --header "Transfer-Encoding: chunked"
+//                --data-binary @<path>0001.flac
+//        "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?continuous=true&timestamps=true&max_alternatives=3"
+
         final RecognizeOptions options = new RecognizeOptions
                 .Builder()
                 .contentType("audio/ogg")

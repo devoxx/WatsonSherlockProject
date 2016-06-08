@@ -44,13 +44,15 @@ public class AlchemyContent {
     }
 
     public String getPublicationDate() {
-        SimpleDateFormat fromUser = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat myFormat = new SimpleDateFormat("MMMMM d ''yy");
+        if (publicationDate != null) {
+            SimpleDateFormat fromUser = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat myFormat = new SimpleDateFormat("MMMMM d ''yy");
 
-        try {
-            return myFormat.format(fromUser.parse(publicationDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
+            try {
+                return myFormat.format(fromUser.parse(publicationDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -116,6 +118,10 @@ public class AlchemyContent {
     }
 
     public String getEmotions() {
+        if (emotions == null) {
+            return "undefined";
+        }
+
         final Map<String, Double> map = new HashMap<>();
         map.put("anger", emotions.get("anger").getAsDouble());
         map.put("disgust", emotions.get("disgust").getAsDouble());
