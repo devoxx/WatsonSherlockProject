@@ -21,7 +21,7 @@ This DeVoxxEd IBM Watson project allows you to upload audio files and articles w
 
 ## Watson service api-keys
 
-You need to create an application.properties file in /src/main/resources with the following content and Watson api-keys
+You need to create an  **application.properties ** file in  **/src/main/resources ** with your Watson credentials & api-keys
 
 ~~~~ 
 # Speech to text credentials
