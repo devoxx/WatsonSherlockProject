@@ -1,6 +1,8 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
+import com.devoxx.watson.exception.ArticleTextExtractionException;
+import com.devoxx.watson.exception.DocumentAlreadyExistsException;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
 import com.devoxx.watson.util.UploadValidator;
@@ -114,7 +116,7 @@ class UploadController {
 
             } catch (DocumentAlreadyExistsException |
                      DocumentThumbnailKeywordsException |
-                     ArticleTextExtractionException e) {
+                    ArticleTextExtractionException e) {
                 return "articleUploader";
             }
         }

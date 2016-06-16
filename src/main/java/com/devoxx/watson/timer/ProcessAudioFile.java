@@ -1,7 +1,7 @@
 package com.devoxx.watson.timer;
 
 import com.devoxx.watson.controller.WatsonController;
-import com.devoxx.watson.service.SpeechToTextException;
+import com.devoxx.watson.exception.SpeechToTextException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

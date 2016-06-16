@@ -2,6 +2,7 @@ package com.devoxx.watson.configuration;
 
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
+import com.ibm.watson.developer_cloud.dialog.v1.DialogService;
 import com.ibm.watson.developer_cloud.language_translation.v2.LanguageTranslation;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import org.springframework.context.MessageSource;
@@ -91,6 +92,16 @@ class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
         conceptInsights.setUsernameAndPassword(username, password);
 
         return conceptInsights;
+    }
+
+    @Bean
+    public DialogService dialogService() {
+        final DialogService dialogService = new DialogService();
+        String username = env.getProperty("dialog.username");
+        String password = env.getProperty("dialog.password");
+        dialogService.setUsernameAndPassword(username, password);
+
+        return dialogService;
     }
 
     @Bean

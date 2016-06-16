@@ -1,14 +1,17 @@
 package com.devoxx.watson.controller;
 
+import com.devoxx.watson.exception.ArticleTextExtractionException;
+import com.devoxx.watson.exception.DocumentAlreadyExistsException;
+import com.devoxx.watson.exception.SpeechToTextException;
 import com.devoxx.watson.model.AlchemyContent;
-import com.devoxx.watson.service.AlchemyLanguageService;
-import com.devoxx.watson.service.ConceptInsightsService;
-import com.devoxx.watson.service.SpeechToTextException;
-import com.devoxx.watson.service.SpeechToTextService;
+import com.devoxx.watson.model.ConversationModel;
+import com.devoxx.watson.service.*;
 import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Documents;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
+import com.ibm.watson.developer_cloud.dialog.v1.model.Conversation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +39,9 @@ public class WatsonController {
     @Autowired
     SpeechToTextService speechToTextService;
 
+    @Autowired
+    ConversationService conversationService;
+
     /**
      * Process an article or video link.
      *
@@ -47,7 +53,7 @@ public class WatsonController {
     AlchemyContent processLink(final String link)
             throws DocumentAlreadyExistsException,
                    DocumentThumbnailKeywordsException,
-                   ArticleTextExtractionException {
+            ArticleTextExtractionException {
 
         final AlchemyContent content = new AlchemyContent(link);
 
@@ -109,7 +115,7 @@ public class WatsonController {
      * @param limit limit the result set
      * @return list of Corpus documents
      */
-    Documents getAllDocuments(final int limit) {
+    public Documents getAllDocuments(final int limit) {
         return conceptInsightsService.getAllDocuments(limit);
     }
 
@@ -160,5 +166,23 @@ public class WatsonController {
         alchemyLanguageService.process(content);
 
         conceptInsightsService.createDocument(content);
+    }
+
+    /**
+     * Initialize the conversation.
+     *
+     * @param dialogId the unique dialog ID
+     * @return the dialog conversation
+     */
+    ConversationModel initConversation(final boolean firstTimeUser,
+                                  final String dialogId) {
+        final Conversation conversation = conversationService.initDialog(firstTimeUser, dialogId);
+
+        final ConversationModel conversationModel = new ConversationModel();
+        conversationModel.setClientId(Integer.toString(conversation.getClientId()));
+        conversationModel.setConversationId(Integer.toString(conversation.getId()));
+        conversationModel.setInput(conversation.getInput());
+        conversationModel.setWatsonResponse(StringUtils.join(conversation.getResponse(), " "));
+        return conversationModel;
     }
 }

@@ -1,5 +1,6 @@
 package com.devoxx.watson.service;
 
+import com.devoxx.watson.exception.SpeechToTextException;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;

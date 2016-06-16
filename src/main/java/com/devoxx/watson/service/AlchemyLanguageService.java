@@ -1,6 +1,6 @@
 package com.devoxx.watson.service;
 
-import com.devoxx.watson.controller.ArticleTextExtractionException;
+import com.devoxx.watson.exception.ArticleTextExtractionException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

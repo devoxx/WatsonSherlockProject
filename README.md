@@ -28,7 +28,7 @@ You need to create an  __application.properties__ file in  __/src/main/resources
 speech.username=<ADD YOUR CREDENTIALS FOR SPEECH>
 speech.password=<ADD YOUR CREDENTIALS FOR SPEECH>
 
-#ConceptInsights credentials
+# ConceptInsights credentials
 insight.username=<ADD YOUR CREDENTIALS FOR CONCEPT INSIGHTS>
 insight.password=<ADD YOUR CREDENTIALS FOR CONCEPT INSIGHTS>
 
@@ -39,7 +39,7 @@ translate.password=<ADD YOUR CREDENTIALS FOR TRANSLATE>
 # Please don't change this 'sandbox' corpus name
 corpus.name=devoxx_sandbox_corpus
 
-#Alchemy credentials
+# Alchemy credentials
 alchemy.apikey=<ADD YOUR API-KEY FOR ALCHEMY>
 ~~~~ 
 
