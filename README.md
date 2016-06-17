@@ -73,6 +73,11 @@ Once the server is running, the application will be available under [http://loca
 2. Enter "http://[yourHostName]/v2/api-docs/"
 3. You can now explore the Search REST method
 
+## Related YouTube video
+  
+[![YouTube Video](http://img.youtube.com/vi/KC7CMrLLm14/0.jpg)](https://www.youtube.com/watch?v=KC7CMrLLm14)
+
+Watch Stephan Janssen and Sandhya Kapoor explain the DeVoxxEd project during DevoxxUK
 
 # License
 
