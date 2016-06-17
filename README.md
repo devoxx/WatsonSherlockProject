@@ -77,7 +77,7 @@ Once the server is running, the application will be available under [http://loca
   
 [![YouTube Video](http://img.youtube.com/vi/KC7CMrLLm14/0.jpg)](https://www.youtube.com/watch?v=KC7CMrLLm14)
 
-Watch Stephan Janssen and Sandhya Kapoor explain the DeVoxxEd project during DevoxxUK
+Watch [Stephan Janssen](https://twitter.com/stephan007) and [Sandhya Kapoor](https://twitter.com/sandhyakapoor9) explain the DeVoxxEd project during DevoxxUK
 
 # License
 
