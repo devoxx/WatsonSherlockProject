@@ -35,7 +35,7 @@ public class SpeechToTextService {
     }
 
     /**
-     * Start speech to text processAudioFile.
+     * Start speech to text processAudioFile.  Uses a supplied array of keywords to spot in the recognized text.
      *
      * @param audioFile the audio file
      * @param docName the document name
