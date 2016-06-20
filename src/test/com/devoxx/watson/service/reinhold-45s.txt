@@ -1,0 +1,14 @@
+alright good morning welcome
+Java nine is primarily going to be about modules
+this is probably not news to most of you
+here in the room
+but as as part of the bigger picture well I had hoped but how does this fit in because after all Java is
+well my goodness is twenty years old
+this year
+I've been working on it for most of those years which is
+I don't know maybe the stake I'm not sure
+how how is the job has lasted this long why is it still young so popular
+well we've had a fairly basic method for evolving it
+we identify a pain point in the platform something that's affecting everybody you
+that whether they're developers deploy yours
+or users

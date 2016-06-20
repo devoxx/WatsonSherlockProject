@@ -1,0 +1,901 @@
+{
+  "result_index": 0,
+  "results": [
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.872,
+          "timestamps": [
+            [
+              "alright",
+              1.14,
+              1.61
+            ],
+            [
+              "good",
+              1.9,
+              2.04
+            ],
+            [
+              "morning",
+              2.04,
+              2.4
+            ],
+            [
+              "welcome",
+              3.2,
+              3.64
+            ]
+          ],
+          "transcript": "alright good morning welcome "
+        },
+        {
+          "transcript": "all right good morning welcome "
+        },
+        {
+          "transcript": "alright good morning welcomes "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.843,
+          "timestamps": [
+            [
+              "Java",
+              5.68,
+              5.94
+            ],
+            [
+              "nine",
+              5.94,
+              6.39
+            ],
+            [
+              "is",
+              6.75,
+              7.33
+            ],
+            [
+              "primarily",
+              7.76,
+              8.2
+            ],
+            [
+              "going",
+              8.2,
+              8.4
+            ],
+            [
+              "to",
+              8.4,
+              8.49
+            ],
+            [
+              "be",
+              8.49,
+              8.62
+            ],
+            [
+              "about",
+              8.62,
+              9.03
+            ],
+            [
+              "models",
+              9.54,
+              10.08
+            ]
+          ],
+          "transcript": "Java nine is primarily going to be about models "
+        },
+        {
+          "transcript": "Java nine is primarily going to be about modules "
+        },
+        {
+          "transcript": "Java nine is primarily going to be about marshals "
+        }
+      ],
+      "keywords_result": {
+        "modules": [
+          {
+            "normalized_text": "modules",
+            "start_time": 9.54,
+            "end_time": 10.08,
+            "confidence": 0.052
+          }
+        ],
+        "Java": [
+          {
+            "normalized_text": "Java",
+            "start_time": 5.68,
+            "end_time": 5.94,
+            "confidence": 0.84
+          }
+        ]
+      }
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.998,
+          "timestamps": [
+            [
+              "this",
+              11.33,
+              11.52
+            ],
+            [
+              "is",
+              11.52,
+              11.67
+            ],
+            [
+              "probably",
+              11.67,
+              12.03
+            ],
+            [
+              "not",
+              12.03,
+              12.21
+            ],
+            [
+              "news",
+              12.21,
+              12.48
+            ],
+            [
+              "to",
+              12.48,
+              12.59
+            ],
+            [
+              "most",
+              12.59,
+              12.85
+            ],
+            [
+              "of",
+              12.85,
+              12.92
+            ],
+            [
+              "you",
+              12.92,
+              13.17
+            ]
+          ],
+          "transcript": "this is probably not news to most of you "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.991,
+          "timestamps": [
+            [
+              "here",
+              13.73,
+              13.93
+            ],
+            [
+              "in",
+              13.93,
+              14.0
+            ],
+            [
+              "the",
+              14.0,
+              14.09
+            ],
+            [
+              "room",
+              14.09,
+              14.49
+            ]
+          ],
+          "transcript": "here in the room "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.853,
+          "timestamps": [
+            [
+              "but",
+              15.58,
+              15.79
+            ],
+            [
+              "as",
+              15.82,
+              16.0
+            ],
+            [
+              "as",
+              16.0,
+              16.21
+            ],
+            [
+              "part",
+              16.21,
+              16.39
+            ],
+            [
+              "of",
+              16.39,
+              16.45
+            ],
+            [
+              "the",
+              16.45,
+              16.52
+            ],
+            [
+              "bigger",
+              16.52,
+              16.74
+            ],
+            [
+              "picture",
+              16.74,
+              17.22
+            ],
+            [
+              "well",
+              17.25,
+              17.43
+            ],
+            [
+              "I",
+              17.43,
+              17.48
+            ],
+            [
+              "had",
+              17.48,
+              17.64
+            ],
+            [
+              "hoped",
+              17.64,
+              17.87
+            ],
+            [
+              "but",
+              17.87,
+              18.05
+            ],
+            [
+              "how",
+              18.05,
+              18.21
+            ],
+            [
+              "does",
+              18.21,
+              18.38
+            ],
+            [
+              "this",
+              18.38,
+              18.55
+            ],
+            [
+              "fit",
+              18.55,
+              18.76
+            ],
+            [
+              "in",
+              18.76,
+              18.99
+            ],
+            [
+              "because",
+              19.02,
+              19.38
+            ],
+            [
+              "after",
+              19.38,
+              19.7
+            ],
+            [
+              "all",
+              19.7,
+              19.92
+            ],
+            [
+              "Java",
+              19.92,
+              20.3
+            ],
+            [
+              "is",
+              20.3,
+              20.79
+            ]
+          ],
+          "transcript": "but as as part of the bigger picture well I had hoped but how does this fit in because after all Java is "
+        },
+        {
+          "transcript": "but as as part of the bigger picture well I had a pet how does this fit in because after all Java is "
+        },
+        {
+          "transcript": "but as a as part of the bigger picture well I had hoped but how does this fit in because after all Java is "
+        }
+      ],
+      "keywords_result": {
+        "Java": [
+          {
+            "normalized_text": "Java",
+            "start_time": 19.92,
+            "end_time": 20.3,
+            "confidence": 0.996
+          }
+        ]
+      }
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.957,
+          "timestamps": [
+            [
+              "well",
+              21.24,
+              21.39
+            ],
+            [
+              "my",
+              21.39,
+              21.53
+            ],
+            [
+              "goodness",
+              21.53,
+              21.94
+            ],
+            [
+              "is",
+              21.94,
+              22.07
+            ],
+            [
+              "twenty",
+              22.07,
+              22.58
+            ],
+            [
+              "years",
+              22.58,
+              23.09
+            ],
+            [
+              "old",
+              23.09,
+              23.66
+            ]
+          ],
+          "transcript": "well my goodness is twenty years old "
+        },
+        {
+          "transcript": "my goodness is twenty years old "
+        },
+        {
+          "transcript": "on my goodness is twenty years old "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.655,
+          "timestamps": [
+            [
+              "this",
+              24.03,
+              24.12
+            ],
+            [
+              "year",
+              24.12,
+              24.48
+            ]
+          ],
+          "transcript": "this year "
+        },
+        {
+          "transcript": "here "
+        },
+        {
+          "transcript": "it\u0027s here "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.806,
+          "timestamps": [
+            [
+              "I\u0027ve",
+              25.12,
+              25.25
+            ],
+            [
+              "been",
+              25.25,
+              25.38
+            ],
+            [
+              "working",
+              25.38,
+              25.67
+            ],
+            [
+              "on",
+              25.67,
+              25.78
+            ],
+            [
+              "it",
+              25.78,
+              25.86
+            ],
+            [
+              "for",
+              25.86,
+              25.96
+            ],
+            [
+              "most",
+              25.96,
+              26.23
+            ],
+            [
+              "of",
+              26.23,
+              26.3
+            ],
+            [
+              "those",
+              26.3,
+              26.49
+            ],
+            [
+              "years",
+              26.49,
+              26.77
+            ],
+            [
+              "which",
+              26.77,
+              26.97
+            ],
+            [
+              "is",
+              26.97,
+              27.31
+            ]
+          ],
+          "transcript": "I\u0027ve been working on it for most of those years which is "
+        },
+        {
+          "transcript": "I\u0027ve been working on it for most of those years witches "
+        },
+        {
+          "transcript": "I\u0027ve been working on for most of those years which is "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.928,
+          "timestamps": [
+            [
+              "I",
+              27.69,
+              27.84
+            ],
+            [
+              "don\u0027t",
+              27.84,
+              28.02
+            ],
+            [
+              "know",
+              28.02,
+              28.11
+            ],
+            [
+              "maybe",
+              28.11,
+              28.36
+            ],
+            [
+              "the",
+              28.36,
+              28.47
+            ],
+            [
+              "stake",
+              28.47,
+              28.8
+            ],
+            [
+              "I\u0027m",
+              28.8,
+              28.88
+            ],
+            [
+              "not",
+              28.88,
+              29.04
+            ],
+            [
+              "sure",
+              29.04,
+              29.3
+            ]
+          ],
+          "transcript": "I don\u0027t know maybe the stake I\u0027m not sure "
+        },
+        {
+          "transcript": "I don\u0027t know maybe the steak I\u0027m not sure "
+        },
+        {
+          "transcript": "I don\u0027t know maybe a steak I\u0027m not sure "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.835,
+          "timestamps": [
+            [
+              "how",
+              30.82,
+              31.08
+            ],
+            [
+              "how",
+              31.11,
+              31.36
+            ],
+            [
+              "is",
+              31.36,
+              31.49
+            ],
+            [
+              "the",
+              31.49,
+              31.68
+            ],
+            [
+              "job",
+              31.68,
+              31.95
+            ],
+            [
+              "has",
+              31.95,
+              32.09
+            ],
+            [
+              "lasted",
+              32.09,
+              32.55
+            ],
+            [
+              "this",
+              32.55,
+              32.72
+            ],
+            [
+              "long",
+              32.72,
+              33.03
+            ],
+            [
+              "why",
+              33.03,
+              33.25
+            ],
+            [
+              "is",
+              33.25,
+              33.37
+            ],
+            [
+              "it",
+              33.37,
+              33.48
+            ],
+            [
+              "still",
+              33.48,
+              34.02
+            ],
+            [
+              "young",
+              34.25,
+              34.48
+            ],
+            [
+              "so",
+              34.48,
+              34.7
+            ],
+            [
+              "popular",
+              34.7,
+              35.26
+            ]
+          ],
+          "transcript": "how how is the job has lasted this long why is it still young so popular "
+        },
+        {
+          "transcript": "how how is the job has lasted this long wise it\u0027s still young so popular "
+        },
+        {
+          "transcript": "how how is the job has lasted this long why is it still you\u0027re so popular "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.89,
+          "timestamps": [
+            [
+              "well",
+              35.77,
+              36.09
+            ],
+            [
+              "we\u0027ve",
+              36.34,
+              36.58
+            ],
+            [
+              "had",
+              36.58,
+              36.79
+            ],
+            [
+              "a",
+              36.79,
+              36.85
+            ],
+            [
+              "fairly",
+              36.85,
+              37.3
+            ],
+            [
+              "basic",
+              37.3,
+              37.83
+            ],
+            [
+              "method",
+              37.83,
+              38.24
+            ],
+            [
+              "for",
+              38.27,
+              38.52
+            ],
+            [
+              "evolving",
+              38.52,
+              38.93
+            ],
+            [
+              "it",
+              38.93,
+              39.1
+            ]
+          ],
+          "transcript": "well we\u0027ve had a fairly basic method for evolving it "
+        },
+        {
+          "transcript": "well we\u0027ve had a fairly basic method for evolving "
+        },
+        {
+          "transcript": "well we had a fairly basic method for evolving it "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.851,
+          "timestamps": [
+            [
+              "we",
+              39.51,
+              39.87
+            ],
+            [
+              "identify",
+              40.1,
+              40.74
+            ],
+            [
+              "a",
+              40.74,
+              40.8
+            ],
+            [
+              "pain",
+              40.8,
+              41.11
+            ],
+            [
+              "point",
+              41.11,
+              41.47
+            ],
+            [
+              "in",
+              41.47,
+              41.57
+            ],
+            [
+              "the",
+              41.57,
+              41.64
+            ],
+            [
+              "platform",
+              41.64,
+              42.22
+            ],
+            [
+              "something",
+              42.22,
+              42.54
+            ],
+            [
+              "that\u0027s",
+              42.54,
+              42.71
+            ],
+            [
+              "affecting",
+              42.71,
+              43.2
+            ],
+            [
+              "everybody",
+              43.2,
+              43.64
+            ],
+            [
+              "you",
+              43.64,
+              43.95
+            ]
+          ],
+          "transcript": "we identify a pain point in the platform something that\u0027s affecting everybody you "
+        },
+        {
+          "transcript": "we identify obtain point in the platform something that\u0027s affecting everybody you "
+        },
+        {
+          "transcript": "we identify a pain point in the platform something that\u0027s affecting everybody you use "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.798,
+          "timestamps": [
+            [
+              "that",
+              44.15,
+              44.29
+            ],
+            [
+              "whether",
+              44.29,
+              44.51
+            ],
+            [
+              "they\u0027re",
+              44.51,
+              44.7
+            ],
+            [
+              "developers",
+              44.7,
+              45.36
+            ],
+            [
+              "deploy",
+              45.36,
+              45.76
+            ],
+            [
+              "yours",
+              45.76,
+              46.11
+            ]
+          ],
+          "transcript": "that whether they\u0027re developers deploy yours "
+        },
+        {
+          "transcript": "that whether they\u0027re developers deploy here\u0027s "
+        },
+        {
+          "transcript": "that whether there developers deploy yours "
+        }
+      ],
+      "keywords_result": {}
+    },
+    {
+      "final": true,
+      "alternatives": [
+        {
+          "confidence": 0.868,
+          "timestamps": [
+            [
+              "or",
+              46.43,
+              46.63
+            ],
+            [
+              "users",
+              46.63,
+              47.16
+            ]
+          ],
+          "transcript": "or users "
+        },
+        {
+          "transcript": "where users "
+        },
+        {
+          "transcript": "were users "
+        }
+      ],
+      "keywords_result": {}
+    }
+  ]
+}

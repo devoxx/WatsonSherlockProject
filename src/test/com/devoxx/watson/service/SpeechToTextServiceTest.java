@@ -7,14 +7,18 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import static org.junit.Assert.*;
 
 /**
  * @author Stephan Janssen
+ * @author James Weaver
  */
 public class SpeechToTextServiceTest {
 
+    private static final Logger LOGGER = Logger.getLogger(SpeechToTextServiceTest.class.getName());
 
     SpeechToText speechToText = new SpeechToText();
 
@@ -22,17 +26,22 @@ public class SpeechToTextServiceTest {
 
     @Test
     public void processAudioFile() {
+        LOGGER.log(Level.INFO, "------ In processAudioFile() -----");
 
         speechToText.setUsernameAndPassword("d2334b1a-4c18-41df-8dab-3659c0dbfb3d", "dRGqpp6tvCXD");
 
         speechToTextService.setSpeechToText(speechToText);
 
-        URL url = SpeechToTextServiceTest.class.getResource("MarkReinholdKeynote1m.ogg");
+        URL url = SpeechToTextServiceTest.class.getResource("reinhold-45s.ogg");
 
         try {
             final File file = new File(url.toURI());
 
-            final String transcript = speechToTextService.processAudioFile(file, "Mark Reinhold");
+            final String[] keywords = { "module", "modules", "Java"};
+
+            final String transcript = speechToTextService.processAudioFile(file, "reinhold-45s", keywords);
+
+            LOGGER.log(Level.INFO, "transcript: \n" + transcript);
 
             assertTrue(transcript != null);
 
@@ -45,7 +54,7 @@ public class SpeechToTextServiceTest {
         }
     }
 
-    @Test
+    //@Test
     public void processFrenchAudioFile() {
         speechToText.setUsernameAndPassword("d2334b1a-4c18-41df-8dab-3659c0dbfb3d", "dRGqpp6tvCXD");
 
@@ -56,7 +65,7 @@ public class SpeechToTextServiceTest {
         try {
             final File file = new File(url.toURI());
 
-            final String transcript = speechToTextService.processAudioFile(file, "Devoxx FR");
+            final String transcript = speechToTextService.processAudioFile(file, "Devoxx FR", null);
 
             assertTrue(transcript != null);
 

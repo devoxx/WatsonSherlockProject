@@ -143,7 +143,7 @@ public class WatsonController {
     public String processSpeechToText(final @NotNull File audioFile, final @NotNull String docName)
             throws SpeechToTextException {
 
-        return speechToTextService.processAudioFile(audioFile, docName);
+        return speechToTextService.processAudioFile(audioFile, docName, null);
     }
 
     /**
