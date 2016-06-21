@@ -200,7 +200,11 @@ public class ConceptInsightsService {
     }
 
     /**
+     * Given the text of an abstract, identify and infer keywords useful for recognizing
      *
+     * @param text text of an abstract
+     *
+     * @return sorted list of unique keywords
      */
     public List<String> identifyInferKeywords(String text) {
         List<String> keywords = new ArrayList<>();
