@@ -4,19 +4,18 @@ import com.devoxx.watson.model.AlchemyContent;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import com.ibm.watson.developer_cloud.http.ServiceCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
  * @author Stephan Janssen
+ * @author James Weaver
  */
 @Component
 public class ConceptInsightsService {
@@ -38,8 +37,12 @@ public class ConceptInsightsService {
     public static final String USER_FIELD_THUMBNAIL = "thumbnail";
     public static final String USER_FIELD_THUMBNAIL_KEYWORDS = "thumbnailKeywords";
 
-    @Autowired
     private ConceptInsights conceptInsights;
+
+    @Autowired
+    public void setConceptInsights(final ConceptInsights conceptInsights) {
+        this.conceptInsights = conceptInsights;
+    }
 
     @Autowired
     private Corpus corpus;
@@ -194,5 +197,26 @@ public class ConceptInsightsService {
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
 
         return queryConcepts.getResults();
+    }
+
+    /**
+     *
+     */
+    public List<String> identifyInferKeywords(String text) {
+        List<String> keywords = new ArrayList<>();
+        final ServiceCall<Annotations> annotations = conceptInsights.annotateText(Graph.WIKIPEDIA, text);
+        for (ScoredConcept scoredConcept : annotations.execute().getAnnotations()) {
+            String label = scoredConcept.getConcept().getLabel();
+            label = label.replace("(", "");
+            label = label.replace(")", "");
+            String[] tokens = label.split(" ");
+            for (String token : tokens) {
+                if (!keywords.contains(token)) {
+                    keywords.add(token);
+                }
+            }
+        }
+        Collections.sort(keywords);
+        return keywords;
     }
 }
