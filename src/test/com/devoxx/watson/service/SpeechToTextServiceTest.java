@@ -26,8 +26,6 @@ public class SpeechToTextServiceTest {
 
     @Test
     public void processAudioFile() {
-        LOGGER.log(Level.INFO, "------ In processAudioFile() -----");
-
         speechToText.setUsernameAndPassword("d2334b1a-4c18-41df-8dab-3659c0dbfb3d", "dRGqpp6tvCXD");
 
         speechToTextService.setSpeechToText(speechToText);

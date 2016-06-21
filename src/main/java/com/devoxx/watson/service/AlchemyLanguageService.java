@@ -13,10 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author Stephan Janssen
+ * @author James Weaver
  */
 @Component
 public class AlchemyLanguageService {
@@ -34,12 +41,15 @@ public class AlchemyLanguageService {
     private static final String URLGET_RANKED_IMAGE_KEYWORDS = "https://gateway-a.watsonplatform.net/calls/url/URLGetRankedImageKeywords";
     private static final String URLGET_TEXT = "https://gateway-a.watsonplatform.net/calls/url/URLGetText";
     private static final String URLGET_COMBINED_DATA = "https://gateway-a.watsonplatform.net/calls/url/URLGetCombinedData";
+    private static final String TEXT_GET_RANKED_KEYWORDS = "https://gateway-a.watsonplatform.net/calls/text/TextGetRankedKeywords";
 
     // Alchemy Language REST parameters
     private static final String APIKEY = "apikey";
     private static final String URL = "url";
+    private static final String TEXT = "text";
     private static final String OUTPUT_MODE = "outputMode";
     private static final String JSON = "json";
+    private static final String KEYWORDS = "keywords";
     private static final String IMAGE_KEYWORDS = "imageKeywords";
     private static final String PUB_DATE = "date";
     private static final String DOC_SENTIMENT_TYPE = "type";
@@ -125,6 +135,51 @@ public class AlchemyLanguageService {
                         .parse();
 
         return new JsonParser().parse(doc.text());
+    }
+
+    /**
+     * Given the text of an abstract, identify keywords useful for recognizing
+     *
+     * @param text text of an abstract
+     *
+     * @return sorted list of unique keywords
+     *
+     *     curl -X POST \
+     *          -d "apikey={API-KEY}" \
+     *          -d "outputMode=json" \
+     *          -d "text=this is some abstract text" \
+     *          "https://gateway-a.watsonplatform.net/calls/text/TextGetRankedKeywords"
+     */
+    public List<String> getKeywordsFromText(final String text) throws IOException {
+        final List<String> keywords = new ArrayList<>();
+        final Document doc =
+            Jsoup.connect(TEXT_GET_RANKED_KEYWORDS)
+                .timeout(15000)
+                .method(Connection.Method.POST)
+                .data(APIKEY, apikey)
+                .data(OUTPUT_MODE, JSON)
+                .data(TEXT, text)
+                .ignoreContentType(true)
+                .execute()
+                .parse();
+
+        final JsonElement element = new JsonParser().parse(doc.text());
+
+        JsonArray array = element.getAsJsonObject().get(KEYWORDS).getAsJsonArray();
+        Iterator<JsonElement> iterator = array.iterator();
+
+        while (iterator.hasNext()) {
+            JsonElement keywordElement = iterator.next();
+            String label = keywordElement.getAsJsonObject().get("text").getAsString();
+            String[] tokens = label.split(" ");
+            for (String token : tokens) {
+                if (!keywords.contains(token)) {
+                    keywords.add(token);
+                }
+            }
+        }
+        Collections.sort(keywords);
+        return keywords;
     }
 
     /**
