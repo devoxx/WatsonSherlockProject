@@ -151,7 +151,7 @@ public class AlchemyLanguageService {
      *          "https://gateway-a.watsonplatform.net/calls/text/TextGetRankedKeywords"
      */
     public List<String> getKeywordsFromText(final String text) throws IOException {
-        String abstractText = (text == null) ? "keyword" : text;
+        String abstractText = (text == null || text.length() == 0) ? "keyword" : text;
         final List<String> keywords = new ArrayList<>();
         final Document doc =
             Jsoup.connect(TEXT_GET_RANKED_KEYWORDS)
