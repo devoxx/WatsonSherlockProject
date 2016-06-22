@@ -138,12 +138,13 @@ public class WatsonController {
      *
      * @param audioFile the audio file
      * @param docName   the doc name
+     * @param audioAbstract the abstract
      * @return returns the transcript
      */
-    public String processSpeechToText(final @NotNull File audioFile, final @NotNull String docName)
+    public String processSpeechToText(final @NotNull File audioFile, final @NotNull String docName, final @NotNull String audioAbstract)
             throws SpeechToTextException {
 
-        return speechToTextService.processAudioFile(audioFile, docName, null);
+        return speechToTextService.processAudioFile(audioFile, docName, audioAbstract);
     }
 
     /**

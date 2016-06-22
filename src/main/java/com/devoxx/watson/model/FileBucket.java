@@ -12,6 +12,8 @@ public class FileBucket {
 
     private String speakers;
 
+    private String audioAbstract;
+
     public String getSpeakers() {
         return speakers;
     }
@@ -30,6 +32,14 @@ public class FileBucket {
 
     public String getDocName() {
         return docName;
+    }
+
+    public String getAudioAbstract() {
+        return audioAbstract;
+    }
+
+    public void setAudioAbstract(String audioAbstract) {
+        this.audioAbstract = audioAbstract;
     }
 
     @SuppressWarnings("unused")

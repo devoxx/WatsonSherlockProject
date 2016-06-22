@@ -26,6 +26,8 @@ public class SpeechToTextServiceTest {
 
     @Test
     public void processAudioFile() {
+        String abstractText = "JDK 9 includes over 80 features, including modules. Some, like project Jigsaw, are huge and will impact every Java Developer. Others are improvements in very specific areas that are likely to be used directly by only a small percentage of developers. Join us for a guided overview of the enhancements coming with JDK 9. This session will provide an quick review of many of the Java Enhancement Proposals targeted to JDK 9. The goal of this talk is not to provide a deep dive into any of the improvements but to help you discover features that might be of interest to you.";
+
         speechToText.setUsernameAndPassword("d2334b1a-4c18-41df-8dab-3659c0dbfb3d", "dRGqpp6tvCXD");
 
         speechToTextService.setSpeechToText(speechToText);
@@ -35,9 +37,7 @@ public class SpeechToTextServiceTest {
         try {
             final File file = new File(url.toURI());
 
-            final String[] keywords = { "module", "modules", "Java"};
-
-            final String transcript = speechToTextService.processAudioFile(file, "reinhold-45s", keywords);
+            final String transcript = speechToTextService.processAudioFile(file, "reinhold-45s", abstractText);
 
             LOGGER.log(Level.INFO, "transcript: \n" + transcript);
 

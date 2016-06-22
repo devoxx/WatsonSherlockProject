@@ -207,8 +207,9 @@ public class ConceptInsightsService {
      * @return sorted list of unique keywords
      */
     public List<String> identifyInferKeywords(String text) {
+        String abstractText = (text == null) ? "keyword" : text;
         List<String> keywords = new ArrayList<>();
-        final ServiceCall<Annotations> annotations = conceptInsights.annotateText(Graph.WIKIPEDIA, text);
+        final ServiceCall<Annotations> annotations = conceptInsights.annotateText(Graph.WIKIPEDIA, abstractText);
         for (ScoredConcept scoredConcept : annotations.execute().getAnnotations()) {
             String label = scoredConcept.getConcept().getLabel();
             label = label.replace("(", "");

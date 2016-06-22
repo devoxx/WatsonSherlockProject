@@ -86,6 +86,7 @@ class UploadController {
             writer.println(fileBucket.getLink());
             writer.println(fileBucket.getDocName());
             writer.println(fileBucket.getSpeakers());
+            writer.println(fileBucket.getAudioAbstract());
             writer.close();
 
             return "success";

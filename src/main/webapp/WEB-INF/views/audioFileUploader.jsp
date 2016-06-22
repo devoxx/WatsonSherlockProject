@@ -38,6 +38,13 @@
                             <form:errors path="link" class="help-inline"/>
                         </div>
                     </div>
+					<label class="col-md-3 control-lable" for="file">Abstract</label>
+					<div class="col-md-7">
+						<form:input type="text" path="audioAbstract" id="name" class="form-control input-sm"/>
+						<div class="has-error">
+							<form:errors path="audioAbstract" class="help-inline"/>
+						</div>
+					</div>
 					<label class="col-md-3 control-lable" for="file">Upload an OGG audio file</label>
 					<div class="col-md-7">
 						<form:input type="file" path="file" id="file" class="form-control input-sm"/>

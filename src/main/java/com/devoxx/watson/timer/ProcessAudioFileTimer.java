@@ -56,7 +56,7 @@ class ProcessAudioFileTimer {
                 List<String> content = getMetaFileContentAndRemove(file);
 
                 if (!content.isEmpty()) {
-                    processAudioFile.execute(file, content.get(1), content.get(0), content.get(2));
+                    processAudioFile.execute(file, content.get(1), content.get(0), content.get(2), content.get(3));
                 } else {
                     LOGGER.log(Level.FINER, "Already processed!");
                 }
@@ -80,6 +80,8 @@ class ProcessAudioFileTimer {
             // Read meta data file
             try {
                 content = Files.readAllLines(txtFile.toPath());
+                //LOGGER.log(Level.INFO, "content.toString() {0}", content.toString());
+
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, e.getCause().toString());
             }

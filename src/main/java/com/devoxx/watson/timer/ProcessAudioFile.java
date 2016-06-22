@@ -27,13 +27,21 @@ class ProcessAudioFile {
      * @param docName   the document name
      * @param link      the YouTube link
      * @param speakers  the speaker(s)
+     * @param audioAbstract      the abstract text
      */
     void execute(final File audioFile,
                  final String docName,
                  final String link,
-                 final String speakers) {
+                 final String speakers,
+                 final String audioAbstract) {
+
+        //LOGGER.log(Level.INFO, "docName: {0}", docName);
+        //LOGGER.log(Level.INFO, "link: {0}", link);
+        //LOGGER.log(Level.INFO, "speakers: {0}", speakers);
+        //LOGGER.log(Level.INFO, "audioAbstract: {0}", audioAbstract);
+
         try {
-            String transcript = watsonController.processSpeechToText(audioFile, docName);
+            String transcript = watsonController.processSpeechToText(audioFile, docName, audioAbstract);
 
             watsonController.createAudioDocument(docName, link, transcript, speakers);
 

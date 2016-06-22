@@ -37,10 +37,10 @@ public class AlchemyLanguageServiceTest {
     }
 
     @Test
-    public void getAlchemyDataFromText() throws IOException {
+    public void getKeywordsFromText() throws IOException {
 
         alchemyAPIService.setApikey("3f8ada5e94db2aa57f5b7804be2d1017c3ba8ace");
-        final String abstractText = "JDK 9 includes over 80 features. Some, like project Jigsaw, are huge and will impact every Java Developer. Others are improvements in very specific areas that are likely to be used directly by only a small percentage of developers. Join us for a guided overview of the enhancements coming with JDK 9. This session will provide an quick review of many of the Java Enhancement Proposals targeted to JDK 9. The goal of this talk is not to provide a deep dive into any of the improvements but to help you discover features that might be of interest to you.";
+        final String abstractText = "JDK 9 includes over 80 features, including modules. Some, like project Jigsaw, are huge and will impact every Java Developer. Others are improvements in very specific areas that are likely to be used directly by only a small percentage of developers. Join us for a guided overview of the enhancements coming with JDK 9. This session will provide an quick review of many of the Java Enhancement Proposals targeted to JDK 9. The goal of this talk is not to provide a deep dive into any of the improvements but to help you discover features that might be of interest to you.";
 
         final List<String> keywords = alchemyAPIService.getKeywordsFromText(abstractText);
 

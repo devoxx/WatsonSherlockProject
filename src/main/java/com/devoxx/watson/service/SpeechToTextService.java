@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +24,17 @@ import java.util.logging.Logger;
 public class SpeechToTextService {
 
     private static final Logger LOGGER = Logger.getLogger(SpeechToTextService.class.getName());
+
+    //Note: For now, to test SpeechToTextServiceTest#processAudioFile(), uncomment next two lines and comment Autowired declarations of the same names
+    //final AlchemyLanguageService alchemyLanguageService = new AlchemyLanguageService();
+    //final ConceptInsightsService conceptInsightsService = new ConceptInsightsService();
+    final ConceptInsights conceptInsights = new ConceptInsights();
+
+    @Autowired
+    AlchemyLanguageService alchemyLanguageService;
+
+    @Autowired
+    ConceptInsightsService conceptInsightsService;
 
     private SpeechToText speechToText;
 
@@ -43,9 +52,11 @@ public class SpeechToTextService {
      * @param languageCode
      * @return the transcript
      */
-    public String processAudioFile(final File audioFile, final String docName, final String[] keywords) throws SpeechToTextException {
+    public String processAudioFile(final File audioFile, final String docName, final String abstractText) throws SpeechToTextException {
 
         LOGGER.log(Level.INFO, "processAudioFile speech to text service for {0}", docName);
+
+        final String[] keywords = obtainKeywordsFromAbstractText(abstractText);
 
         final boolean keywordsSupplied = keywords != null && keywords.length > 0;
 
@@ -106,6 +117,8 @@ public class SpeechToTextService {
             stringBuilder.append(phrase + "\n");
         }
 
+        LOGGER.log(Level.INFO, "transcript: \n" + stringBuilder.toString());
+
         return stringBuilder.toString();
     }
 
@@ -135,4 +148,56 @@ public class SpeechToTextService {
 
         return spottedKeywordMatch;
     }
+
+    /**
+     * Leverages AlchemyLanguage and Concept Insights services to extract and infer keywords from the text of an abstract
+     *
+     * @param abstractText text of an abstract
+     *
+     * @return extracted and inferred keywords
+     */
+    private String[] obtainKeywordsFromAbstractText(String abstractText) {
+
+        // TODO: Remove following and instead leverage Autowired
+        alchemyLanguageService.setApikey("3f8ada5e94db2aa57f5b7804be2d1017c3ba8ace");
+
+        String[] keywordsArray = {};
+        List<String> extractedKeywords = new ArrayList<>();
+        try {
+            extractedKeywords = alchemyLanguageService.getKeywordsFromText(abstractText);
+        }
+        catch (IOException ioe) {
+            LOGGER.log(Level.SEVERE, "Exception obtaining extractedKeywords: {0}" + ioe);
+        }
+        //LOGGER.log(Level.INFO, "extractedKeywords: \n" + extractedKeywords);
+
+
+        // TODO: Remove following and instead leverage Autowired
+        conceptInsights.setUsernameAndPassword("384ae42f-bce3-4f47-82d7-69f1a13feb5a", "TPiknk6Whoak");
+        conceptInsightsService.setConceptInsights(conceptInsights);
+
+        List<String> inferredKeywords = new ArrayList<>();
+        inferredKeywords = conceptInsightsService.identifyInferKeywords(abstractText);
+        //LOGGER.log(Level.INFO, "inferredKeywords: \n" + inferredKeywords);
+
+
+        // Combine and sort both lists of keywords, returning a String array
+        List<String> allKeywords = new ArrayList<>();
+        allKeywords.addAll(extractedKeywords);
+        allKeywords.addAll(inferredKeywords);
+        Collections.sort(allKeywords);
+        //LOGGER.log(Level.INFO, "allKeywords: \n" + allKeywords);
+
+        List<String> uniqueKeywords = new ArrayList<>();
+        for (String keyword : allKeywords) {
+            if (!uniqueKeywords.contains(keyword)) {
+                uniqueKeywords.add(keyword);
+            }
+        }
+        Collections.sort(uniqueKeywords);
+        LOGGER.log(Level.INFO, "uniqueKeywords: \n" + uniqueKeywords);
+
+        return uniqueKeywords.toArray(keywordsArray);
+    }
+
 }
