@@ -71,7 +71,7 @@ public class SpeechToTextService {
 
         if (keywordsSupplied) {
             optionsBuilder.keywords(keywords)
-                          .keywordsThreshold(0.02);  //TODO: Make this configurable
+                          .keywordsThreshold(0.001);  //TODO: Make this configurable
         }
 
         final RecognizeOptions options = optionsBuilder.build();
