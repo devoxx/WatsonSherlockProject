@@ -21,6 +21,11 @@ import java.util.logging.Logger;
 class ProcessAudioFileTimer {
 
     private static final String OGG_FILE_EXTENSION = ".ogg";
+    private static final int DOC_NAME = 1;
+    private static final int LINK = 0;
+    private static final int SPEAKERS = 2;
+    private static final int AUDIO_ABSTRACT = 3;
+    private static final int AUDIO_MODEL = 4;
 
     @Autowired
     private ProcessAudioFile processAudioFile;
@@ -56,7 +61,12 @@ class ProcessAudioFileTimer {
                 List<String> content = getMetaFileContentAndRemove(file);
 
                 if (!content.isEmpty()) {
-                    processAudioFile.execute(file, content.get(1), content.get(0), content.get(2), content.get(3));
+                    processAudioFile.execute(file,
+                                             content.get(DOC_NAME),
+                                             content.get(LINK),
+                                             content.get(SPEAKERS),
+                                             content.get(AUDIO_ABSTRACT),
+                                             content.get(AUDIO_MODEL));
                 } else {
                     LOGGER.log(Level.FINER, "Already processed!");
                 }

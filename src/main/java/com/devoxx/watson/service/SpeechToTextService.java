@@ -50,11 +50,13 @@ public class SpeechToTextService {
      * @param audioFile the audio file
      * @param docName the document name
      * @param abstractText the presentation abstract text
+     * @param audioModel the model name used for the audio recognition.
      * @return the transcript
      */
     public String processAudioFile(final File audioFile,
                                    final String docName,
-                                   final String abstractText) throws SpeechToTextException {
+                                   final String abstractText,
+                                   final String audioModel) throws SpeechToTextException {
 
         LOGGER.log(Level.INFO, "processAudioFile speech to text service for {0}", docName);
 
@@ -66,6 +68,7 @@ public class SpeechToTextService {
             .contentType("audio/ogg")
             .continuous(true)
             .timestamps(true)
+            .model(audioModel)
             .maxAlternatives(3)
             .interimResults(false);
 

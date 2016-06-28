@@ -17,8 +17,12 @@ class ProcessAudioFile {
 
     private static final Logger LOGGER = Logger.getLogger(ProcessAudioFile.class.getName());
 
-    @Autowired
     private WatsonController watsonController;
+
+    @Autowired
+    public void setWatsonController(final WatsonController watsonController) {
+        this.watsonController = watsonController;
+    }
 
     /**
      * Process the audio file.
@@ -28,12 +32,14 @@ class ProcessAudioFile {
      * @param link      the YouTube link
      * @param speakers  the speaker(s)
      * @param audioAbstract      the abstract text
+     * @param audioModel the model used for recognizing the audio
      */
     void execute(final File audioFile,
                  final String docName,
                  final String link,
                  final String speakers,
-                 final String audioAbstract) {
+                 final String audioAbstract,
+                 final String audioModel) {
 
         //LOGGER.log(Level.INFO, "docName: {0}", docName);
         //LOGGER.log(Level.INFO, "link: {0}", link);
@@ -41,7 +47,7 @@ class ProcessAudioFile {
         //LOGGER.log(Level.INFO, "audioAbstract: {0}", audioAbstract);
 
         try {
-            String transcript = watsonController.processSpeechToText(audioFile, docName, audioAbstract);
+            String transcript = watsonController.processSpeechToText(audioFile, docName, audioAbstract, audioModel);
 
             watsonController.createAudioDocument(docName, link, transcript, speakers);
 

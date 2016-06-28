@@ -65,7 +65,7 @@ public class SpeechToTextServiceTest {
         try {
             final File file = new File(url.toURI());
 
-            final String transcript = speechToTextService.processAudioFile(file, "reinhold-45s", abstractText);
+            final String transcript = speechToTextService.processAudioFile(file, "reinhold-45s", abstractText, "en-US_BroadbandModel");
 
             LOGGER.log(Level.INFO, "transcript: \n" + transcript);
 
@@ -91,7 +91,7 @@ public class SpeechToTextServiceTest {
         try {
             final File file = new File(url.toURI());
 
-            final String transcript = speechToTextService.processAudioFile(file, "Devoxx FR", null);
+            final String transcript = speechToTextService.processAudioFile(file, "Devoxx FR", null, "fr-FR_BroadbandModel");
 
             assertTrue(transcript != null);
 

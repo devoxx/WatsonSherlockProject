@@ -6,15 +6,13 @@ import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.SpeechToTextException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.ConversationModel;
-import com.devoxx.watson.service.AlchemyLanguageService;
-import com.devoxx.watson.service.ConceptInsightsService;
-import com.devoxx.watson.service.ConversationService;
-import com.devoxx.watson.service.SpeechToTextService;
+import com.devoxx.watson.service.*;
 import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Documents;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
 import com.ibm.watson.developer_cloud.dialog.v1.model.Conversation;
+import com.ibm.watson.developer_cloud.language_translation.v2.model.Language;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +39,8 @@ public class WatsonController {
 
     private ConversationService conversationService;
 
+    private LanguageTranslateService languageTranslateService;
+
     @Autowired
     public void setConceptInsightsService(final ConceptInsightsService conceptInsightsService) {
         this.conceptInsightsService = conceptInsightsService;
@@ -59,6 +59,11 @@ public class WatsonController {
     @Autowired
     public void setConversationService(final ConversationService conversationService) {
         this.conversationService = conversationService;
+    }
+
+    @Autowired
+    public void setLanguageTranslateService(final LanguageTranslateService languageTranslateService) {
+        this.languageTranslateService = languageTranslateService;
     }
 
     /**
@@ -160,9 +165,16 @@ public class WatsonController {
      */
     public String processSpeechToText(final File audioFile,
                                       final String docName,
-                                      final String audioAbstract) throws SpeechToTextException {
+                                      final String audioAbstract,
+                                      final String audioModel) throws SpeechToTextException {
 
-        return speechToTextService.processAudioFile(audioFile, docName, audioAbstract);
+        String transcript = speechToTextService.processAudioFile(audioFile, docName, audioAbstract, audioModel);
+
+        if (audioModel.contains("FR")) {
+            transcript = languageTranslateService.translate(transcript, Language.FRENCH, Language.ENGLISH);
+        }
+
+        return transcript;
     }
 
     /**

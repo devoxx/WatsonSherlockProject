@@ -14,6 +14,8 @@ public class FileBucket {
 
     private String audioAbstract;
 
+    private String language;
+
     public String getSpeakers() {
         return speakers;
     }
@@ -57,4 +59,11 @@ public class FileBucket {
         this.file = file;
     }
 
+    public void setLanguage(final String language) {
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
 }

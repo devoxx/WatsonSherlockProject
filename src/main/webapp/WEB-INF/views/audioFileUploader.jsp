@@ -17,35 +17,48 @@
 		
 			<div class="row">
 				<div class="form-group col-md-12">
-                    <label class="col-md-3 control-lable" for="file">Presentation name</label>
+
+					<label class="col-md-3 control-label" for="name">Presentation name</label>
                     <div class="col-md-7">
                         <form:input type="text" path="docName" id="name" class="form-control input-sm"/>
                         <div class="has-error">
                             <form:errors path="docName" class="help-inline"/>
                         </div>
                     </div>
-                    <label class="col-md-3 control-lable" for="file">Speaker(s)</label>
+
+					<label class="col-md-3 control-label" for="speakers">Speaker(s)</label>
 					<div class="col-md-7">
-						<form:input type="text" path="speakers" id="name" class="form-control input-sm"/>
+						<form:input type="text" path="speakers" id="speakers" class="form-control input-sm"/>
 						<div class="has-error">
 							<form:errors path="speakers" class="help-inline"/>
 						</div>
 					</div>
-					<label class="col-md-3 control-lable" for="file">YouTube link</label>
+
+					<label class="col-md-3 control-label" for="link">YouTube link</label>
                     <div class="col-md-7">
-                        <form:input type="text" path="link" id="name" class="form-control input-sm"/>
+                        <form:input type="text" path="link" id="link" class="form-control input-sm"/>
                         <div class="has-error">
                             <form:errors path="link" class="help-inline"/>
                         </div>
                     </div>
-					<label class="col-md-3 control-lable" for="file">Abstract</label>
+
+					<label class="col-md-3 control-label" for="abstract">Abstract</label>
 					<div class="col-md-7">
-						<form:input type="text" path="audioAbstract" id="name" class="form-control input-sm"/>
+						<form:input type="text" path="audioAbstract" id="abstract" class="form-control input-sm"/>
 						<div class="has-error">
 							<form:errors path="audioAbstract" class="help-inline"/>
 						</div>
 					</div>
-					<label class="col-md-3 control-lable" for="file">Upload an OGG audio file</label>
+
+					<label class="col-md-3 control-label" for="language">Language</label>
+					<div class="col-md-7">
+						<form:select path="language" id="language" items="${languageList}" class="form-control input-sm"/>
+						<div class="has-error">
+							<form:errors path="audioAbstract" class="help-inline"/>
+						</div>
+					</div>
+
+					<label class="col-md-3 control-label" for="file">Upload an OGG audio file</label>
 					<div class="col-md-7">
 						<form:input type="file" path="file" id="file" class="form-control input-sm"/>
 						<div class="has-error">

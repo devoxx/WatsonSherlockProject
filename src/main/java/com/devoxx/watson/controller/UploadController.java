@@ -1,9 +1,9 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
-import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.ArticleTextExtractionException;
 import com.devoxx.watson.exception.DocumentAlreadyExistsException;
+import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.model.Article;
 import com.devoxx.watson.model.FileBucket;
 import com.devoxx.watson.util.UploadValidator;
@@ -22,6 +22,8 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,6 +66,13 @@ class UploadController {
     public String getSingleUploadPage(ModelMap model) {
         FileBucket fileModel = new FileBucket();
         model.addAttribute("fileBucket", fileModel);
+
+        Map<String,String> languages = new LinkedHashMap<String,String>();
+        languages.put("en-US_BroadbandModel", "English (US)");
+        languages.put("en-UK_BroadbandModel", "English (UK)");
+        languages.put("fr-FR_BroadbandModel", "French");
+        model.addAttribute("languageList", languages);
+
         return "audioFileUploader";
     }
 
@@ -96,6 +105,7 @@ class UploadController {
             writer.println(fileBucket.getDocName());
             writer.println(fileBucket.getSpeakers());
             writer.println(fileBucket.getAudioAbstract());
+            writer.println(fileBucket.getLanguage());
             writer.close();
 
             return "success";
