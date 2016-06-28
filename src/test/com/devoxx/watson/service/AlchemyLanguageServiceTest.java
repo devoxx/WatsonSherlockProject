@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -19,21 +19,29 @@ public class AlchemyLanguageServiceTest {
 
     private static final Logger LOGGER = Logger.getLogger(SpeechToTextServiceTest.class.getName());
 
-    final AlchemyLanguageService alchemyAPIService = new AlchemyLanguageService();
+    private AlchemyLanguageService alchemyAPIService = new AlchemyLanguageService();
 
-    //@Test
+    @Test
     public void process() {
 
         alchemyAPIService.setApikey("446dc444d593ed09eece2c66476c87c269c37896");
-        alchemyAPIService.process(new AlchemyContent("link"));
+
+        final AlchemyContent alchemyContent = new AlchemyContent("link");
+        alchemyContent.setAuthors("Stephan");
+        alchemyContent.setContent("test");
+
+        alchemyAPIService.process(alchemyContent);
     }
 
-    //@Test
+    @Test
     public void getThumbnailKeywords() throws IOException {
 
         alchemyAPIService.setApikey("3f8ada5e94db2aa57f5b7804be2d1017c3ba8ace");
+
         final String thumbnailKeywords =
                 alchemyAPIService.getThumbnailKeywords("https://www.voxxed.com/wp-content/uploads/2016/04/Screen-Shot-2016-04-18-at-14.49.05.jpg");
+
+        assertNotNull(thumbnailKeywords);
     }
 
     @Test
@@ -47,7 +55,5 @@ public class AlchemyLanguageServiceTest {
         LOGGER.log(Level.INFO, "keywords: \n" + keywords);
 
         assertTrue(keywords != null);
-
-        assertFalse(keywords == null);
     }
 }

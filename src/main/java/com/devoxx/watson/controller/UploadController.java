@@ -1,6 +1,7 @@
 package com.devoxx.watson.controller;
 
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
+import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.ArticleTextExtractionException;
 import com.devoxx.watson.exception.DocumentAlreadyExistsException;
 import com.devoxx.watson.model.Article;
@@ -34,11 +35,19 @@ class UploadController {
 
     private static final Logger LOGGER = Logger.getLogger(UploadController.class.getName());
 
-    @Autowired
-    UploadValidator uploadValidator;
+    private UploadValidator uploadValidator;
+
+    private WatsonController watsonController;
 
     @Autowired
-    WatsonController watsonController;
+    public void setUploadValidator(final UploadValidator uploadValidator) {
+        this.uploadValidator = uploadValidator;
+    }
+
+    @Autowired
+    public void setWatsonController(final WatsonController watsonController) {
+        this.watsonController = watsonController;
+    }
 
     @SuppressWarnings("unused")
     @InitBinder
@@ -93,14 +102,12 @@ class UploadController {
         }
     }
 
-
     @RequestMapping(value = "/articleUploader", method = RequestMethod.GET)
     public String getArticlePage(ModelMap model) {
         final Article article = new Article();
         model.addAttribute("article", article);
         return "articleUploader";
     }
-
 
     @RequestMapping(value = "/articleUploader", method = RequestMethod.POST)
     public String contentUpload(@Valid Article article, BindingResult result, ModelMap model) {
@@ -116,7 +123,7 @@ class UploadController {
                 return "success";
 
             } catch (DocumentAlreadyExistsException |
-                     DocumentThumbnailKeywordsException |
+                    DocumentThumbnailKeywordsException |
                     ArticleTextExtractionException e) {
                 return "articleUploader";
             }

@@ -34,6 +34,7 @@ public class YouTubeProcessor {
 
     private File downloadsPath = new File(DOWNLOADS);
 
+    @SuppressWarnings("unused")
     private enum Action {
 
         // Downloads the audio files for the given YouTube channel

@@ -18,6 +18,7 @@ public class FileBucket {
         return speakers;
     }
 
+    @SuppressWarnings("unused")
     public void setSpeakers(final String speakers) {
         this.speakers = speakers;
     }
@@ -38,6 +39,7 @@ public class FileBucket {
         return audioAbstract;
     }
 
+    @SuppressWarnings("unused")
     public void setAudioAbstract(String audioAbstract) {
         this.audioAbstract = audioAbstract;
     }

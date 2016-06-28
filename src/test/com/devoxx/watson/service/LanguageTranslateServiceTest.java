@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
  */
 public class LanguageTranslateServiceTest {
 
+    // This is an integration test
     @Test
     public void translateTest() {
 

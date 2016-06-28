@@ -13,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +50,8 @@ public class AlchemyLanguageService {
     private static final String IMAGE_KEYWORDS = "imageKeywords";
     private static final String PUB_DATE = "date";
     private static final String DOC_SENTIMENT_TYPE = "type";
+
+    private static final int TIMEOUT_IN_MILLIS = 15000;
 
     private String apikey;
 
@@ -124,7 +123,7 @@ public class AlchemyLanguageService {
     private JsonElement getAlchemyData(final String link) throws IOException {
         final Document doc =
                    Jsoup.connect(URLGET_COMBINED_DATA)
-                        .timeout(15000)
+                        .timeout(TIMEOUT_IN_MILLIS)
                         .method(Connection.Method.POST)
                         .data(APIKEY, apikey)
                         .data(OUTPUT_MODE, JSON)
@@ -150,12 +149,13 @@ public class AlchemyLanguageService {
      *          -d "text=this is some abstract text" \
      *          "https://gateway-a.watsonplatform.net/calls/text/TextGetRankedKeywords"
      */
-    public List<String> getKeywordsFromText(final String text) throws IOException {
+    List<String> getKeywordsFromText(final String text) throws IOException {
+
         String abstractText = (text == null || text.length() == 0) ? "keyword" : text;
         final List<String> keywords = new ArrayList<>();
         final Document doc =
             Jsoup.connect(TEXT_GET_RANKED_KEYWORDS)
-                .timeout(15000)
+                .timeout(TIMEOUT_IN_MILLIS)
                 .method(Connection.Method.POST)
                 .data(APIKEY, apikey)
                 .data(OUTPUT_MODE, JSON)
@@ -167,10 +167,8 @@ public class AlchemyLanguageService {
         final JsonElement element = new JsonParser().parse(doc.text());
 
         JsonArray array = element.getAsJsonObject().get(KEYWORDS).getAsJsonArray();
-        Iterator<JsonElement> iterator = array.iterator();
 
-        while (iterator.hasNext()) {
-            JsonElement keywordElement = iterator.next();
+        for (final JsonElement keywordElement : array) {
             String label = keywordElement.getAsJsonObject().get("text").getAsString();
             String[] tokens = label.split(" ");
             for (String token : tokens) {
@@ -197,7 +195,7 @@ public class AlchemyLanguageService {
         final Document doc;
         try {
             doc = Jsoup.connect(URLGET_TEXT)
-                    .timeout(15000)
+                    .timeout(TIMEOUT_IN_MILLIS)
                     .method(Connection.Method.POST)
                     .data(APIKEY, apikey)
                     .data(OUTPUT_MODE, JSON)
@@ -227,8 +225,9 @@ public class AlchemyLanguageService {
      * ords
      */
     public String getThumbnailKeywords(final String thumbnailURL) throws IOException {
+
         final Document doc = Jsoup.connect(URLGET_RANKED_IMAGE_KEYWORDS)
-                                  .timeout(15000)
+                                  .timeout(TIMEOUT_IN_MILLIS)
                                   .method(Connection.Method.GET)
                                   .data(APIKEY, apikey)
                                   .data(URL, thumbnailURL)

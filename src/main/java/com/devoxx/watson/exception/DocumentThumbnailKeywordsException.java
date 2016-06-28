@@ -1,4 +1,4 @@
-package com.devoxx.watson.controller;
+package com.devoxx.watson.exception;
 
 /**
  * @author Stephan Janssen

@@ -2,10 +2,14 @@ package com.devoxx.watson.controller;
 
 import com.devoxx.watson.exception.ArticleTextExtractionException;
 import com.devoxx.watson.exception.DocumentAlreadyExistsException;
+import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.SpeechToTextException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.ConversationModel;
-import com.devoxx.watson.service.*;
+import com.devoxx.watson.service.AlchemyLanguageService;
+import com.devoxx.watson.service.ConceptInsightsService;
+import com.devoxx.watson.service.ConversationService;
+import com.devoxx.watson.service.SpeechToTextService;
 import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Documents;
@@ -15,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -30,30 +33,45 @@ import static com.devoxx.watson.service.ConceptInsightsService.USER_FIELD_THUMBN
 @Component
 public class WatsonController {
 
-    @Autowired
-    ConceptInsightsService conceptInsightsService;
+    private ConceptInsightsService conceptInsightsService;
+
+    private AlchemyLanguageService alchemyLanguageService;
+
+    private SpeechToTextService speechToTextService;
+
+    private ConversationService conversationService;
 
     @Autowired
-    AlchemyLanguageService alchemyLanguageService;
+    public void setConceptInsightsService(final ConceptInsightsService conceptInsightsService) {
+        this.conceptInsightsService = conceptInsightsService;
+    }
 
     @Autowired
-    SpeechToTextService speechToTextService;
+    public void setAlchemyLanguageService(final AlchemyLanguageService alchemyLanguageService) {
+        this.alchemyLanguageService = alchemyLanguageService;
+    }
 
     @Autowired
-    ConversationService conversationService;
+    public void setSpeechToTextService(final SpeechToTextService speechToTextService) {
+        this.speechToTextService = speechToTextService;
+    }
+
+    @Autowired
+    public void setConversationService(final ConversationService conversationService) {
+        this.conversationService = conversationService;
+    }
 
     /**
      * Process an article or video link.
      *
      * @param link the article or presentation link
-     * @throws DocumentAlreadyExistsException
-     * @throws DocumentThumbnailKeywordsException
+     * @throws DocumentAlreadyExistsException  the document already exists
+     * @throws DocumentThumbnailKeywordsException document has no thumbnail exception
      * @return the alchemy content
      */
-    AlchemyContent processLink(final String link)
-            throws DocumentAlreadyExistsException,
-                   DocumentThumbnailKeywordsException,
-            ArticleTextExtractionException {
+    AlchemyContent processLink(final String link) throws DocumentAlreadyExistsException,
+                                                         DocumentThumbnailKeywordsException,
+                                                         ArticleTextExtractionException {
 
         final AlchemyContent content = new AlchemyContent(link);
 
@@ -70,7 +88,6 @@ public class WatsonController {
             conceptInsightsService.createDocument(content);
 
             return content;
-
         }
 
         // Does document have thumbnail keywords?
@@ -115,7 +132,7 @@ public class WatsonController {
      * @param limit limit the result set
      * @return list of Corpus documents
      */
-    public Documents getAllDocuments(final int limit) {
+    Documents getAllDocuments(final int limit) {
         return conceptInsightsService.getAllDocuments(limit);
     }
 
@@ -141,8 +158,9 @@ public class WatsonController {
      * @param audioAbstract the abstract
      * @return returns the transcript
      */
-    public String processSpeechToText(final @NotNull File audioFile, final @NotNull String docName, final @NotNull String audioAbstract)
-            throws SpeechToTextException {
+    public String processSpeechToText(final File audioFile,
+                                      final String docName,
+                                      final String audioAbstract) throws SpeechToTextException {
 
         return speechToTextService.processAudioFile(audioFile, docName, audioAbstract);
     }
@@ -176,7 +194,8 @@ public class WatsonController {
      * @return the dialog conversation
      */
     ConversationModel initConversation(final boolean firstTimeUser,
-                                  final String dialogId) {
+                                       final String dialogId) {
+
         final Conversation conversation = conversationService.initDialog(firstTimeUser, dialogId);
 
         final ConversationModel conversationModel = new ConversationModel();

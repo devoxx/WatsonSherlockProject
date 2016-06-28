@@ -1,10 +1,6 @@
 package com.devoxx.watson.service;
 
 import com.devoxx.watson.exception.SpeechToTextException;
-import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Annotations;
-import com.ibm.watson.developer_cloud.concept_insights.v2.model.Graph;
-import com.ibm.watson.developer_cloud.http.ServiceCall;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * The Watson Speech to Text (STT) service.
+ *
  * @author Stephan Janssen
  * @author James Weaver
  */
@@ -25,16 +23,9 @@ public class SpeechToTextService {
 
     private static final Logger LOGGER = Logger.getLogger(SpeechToTextService.class.getName());
 
-    //Note: For now, to test SpeechToTextServiceTest#processAudioFile(), uncomment next two lines and comment Autowired declarations of the same names
-    //final AlchemyLanguageService alchemyLanguageService = new AlchemyLanguageService();
-    //final ConceptInsightsService conceptInsightsService = new ConceptInsightsService();
-    final ConceptInsights conceptInsights = new ConceptInsights();
+    private AlchemyLanguageService alchemyLanguageService;
 
-    @Autowired
-    AlchemyLanguageService alchemyLanguageService;
-
-    @Autowired
-    ConceptInsightsService conceptInsightsService;
+    private ConceptInsightsService conceptInsightsService;
 
     private SpeechToText speechToText;
 
@@ -43,29 +34,33 @@ public class SpeechToTextService {
         this.speechToText = speechToText;
     }
 
+    @Autowired
+    public void setAlchemyLanguageService(final AlchemyLanguageService alchemyLanguageService) {
+        this.alchemyLanguageService = alchemyLanguageService;
+    }
+
+    @Autowired
+    public void setConceptInsightsService(final ConceptInsightsService conceptInsightsService) {
+        this.conceptInsightsService = conceptInsightsService;
+    }
+
     /**
      * Start speech to text processAudioFile.  Uses a supplied array of keywords to spot in the recognized text.
      *
      * @param audioFile the audio file
      * @param docName the document name
-     * @paran keywords optional keywords to spot in the audio
-     * @param languageCode
+     * @param abstractText the presentation abstract text
      * @return the transcript
      */
-    public String processAudioFile(final File audioFile, final String docName, final String abstractText) throws SpeechToTextException {
+    public String processAudioFile(final File audioFile,
+                                   final String docName,
+                                   final String abstractText) throws SpeechToTextException {
 
         LOGGER.log(Level.INFO, "processAudioFile speech to text service for {0}", docName);
 
         final String[] keywords = obtainKeywordsFromAbstractText(abstractText);
 
-        final boolean keywordsSupplied = keywords != null && keywords.length > 0;
-
-// TODO - Try this
-//        curl -X POST -u <username>:<password>
-//                --header "Content-Type: audio/flac"
-//                --header "Transfer-Encoding: chunked"
-//                --data-binary @<path>0001.flac
-//        "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?continuous=true&timestamps=true&max_alternatives=3"
+        final boolean keywordsSupplied = keywords.length > 0;
 
         final RecognizeOptions.Builder optionsBuilder = new RecognizeOptions.Builder()
             .contentType("audio/ogg")
@@ -76,7 +71,7 @@ public class SpeechToTextService {
 
         if (keywordsSupplied) {
             optionsBuilder.keywords(keywords)
-                .keywordsThreshold(0.02);  //TODO: Make this configurable
+                          .keywordsThreshold(0.02);  //TODO: Make this configurable
         }
 
         final RecognizeOptions options = optionsBuilder.build();
@@ -114,7 +109,7 @@ public class SpeechToTextService {
                 }
                 phrase += wordToConcatenate + " ";
             }
-            stringBuilder.append(phrase + "\n");
+            stringBuilder.append(phrase).append("\n");
         }
 
         LOGGER.log(Level.INFO, "transcript: \n" + stringBuilder.toString());
@@ -125,12 +120,13 @@ public class SpeechToTextService {
     /**
      * Returns the keyword, if present, that matches a given timestamp
      *
-     * @param keywordsResultMap
-     * @param speechTimestamp
+     * @param keywordsResultMap   the result map
+     * @param speechTimestamp     the speech timestamp
      * @return keyword spotted in speech
      */
-    private String obtainSpottedKeywordByTimestamp(Map<String, List<KeywordsResult>> keywordsResultMap,
-                                                   SpeechTimestamp speechTimestamp) {
+    private String obtainSpottedKeywordByTimestamp(final Map<String, List<KeywordsResult>> keywordsResultMap,
+                                                   final SpeechTimestamp speechTimestamp) {
+
         String spottedKeywordMatch = "";
         if (!keywordsResultMap.isEmpty()) {
             Collection<List<KeywordsResult>> keywordsResultCollection = keywordsResultMap.values();
@@ -156,10 +152,7 @@ public class SpeechToTextService {
      *
      * @return extracted and inferred keywords
      */
-    private String[] obtainKeywordsFromAbstractText(String abstractText) {
-
-        // TODO: Remove following and instead leverage Autowired
-        alchemyLanguageService.setApikey("3f8ada5e94db2aa57f5b7804be2d1017c3ba8ace");
+    private String[] obtainKeywordsFromAbstractText(final String abstractText) {
 
         String[] keywordsArray = {};
         List<String> extractedKeywords = new ArrayList<>();
@@ -169,24 +162,17 @@ public class SpeechToTextService {
         catch (IOException ioe) {
             LOGGER.log(Level.SEVERE, "Exception obtaining extractedKeywords: {0}" + ioe);
         }
-        //LOGGER.log(Level.INFO, "extractedKeywords: \n" + extractedKeywords);
 
-
-        // TODO: Remove following and instead leverage Autowired
-        conceptInsights.setUsernameAndPassword("384ae42f-bce3-4f47-82d7-69f1a13feb5a", "TPiknk6Whoak");
-        conceptInsightsService.setConceptInsights(conceptInsights);
-
-        List<String> inferredKeywords = new ArrayList<>();
+        List<String> inferredKeywords;
         inferredKeywords = conceptInsightsService.identifyInferKeywords(abstractText);
-        //LOGGER.log(Level.INFO, "inferredKeywords: \n" + inferredKeywords);
-
+        LOGGER.log(Level.INFO, "inferredKeywords: \n" + inferredKeywords);
 
         // Combine and sort both lists of keywords, returning a String array
         List<String> allKeywords = new ArrayList<>();
         allKeywords.addAll(extractedKeywords);
         allKeywords.addAll(inferredKeywords);
         Collections.sort(allKeywords);
-        //LOGGER.log(Level.INFO, "allKeywords: \n" + allKeywords);
+        LOGGER.log(Level.INFO, "allKeywords: \n" + allKeywords);
 
         List<String> uniqueKeywords = new ArrayList<>();
         for (String keyword : allKeywords) {

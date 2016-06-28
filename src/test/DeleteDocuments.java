@@ -125,7 +125,7 @@ public class DeleteDocuments {
             "/corpora/eve6tionsto1/devoxx_corpus1/documents/2131857777"};
 
 
-    DeleteDocuments() throws IOException {
+    private DeleteDocuments() throws IOException {
 
         for (String file : files) {
             String cmd = "curl -X DELETE -u a425694b-f06a-4956-886d-e2e9e66d7c65:FPhRNXvLnJ9m https://gateway.watsonplatform.net/concept-insights/api/v2" + file;

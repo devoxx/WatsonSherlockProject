@@ -1,13 +1,12 @@
 package com.devoxx.watson.controller;
 
+import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.ArticleTextExtractionException;
 import com.devoxx.watson.exception.DocumentAlreadyExistsException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.ConversationModel;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
-import com.ibm.watson.developer_cloud.dialog.v1.model.Conversation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -99,7 +98,7 @@ class WatsonRestController {
             return new ResponseEntity<>(content.getTitle(), HttpStatus.CREATED);
 
         } catch (DocumentAlreadyExistsException |
-                 DocumentThumbnailKeywordsException e) {
+                DocumentThumbnailKeywordsException e) {
 
             return new ResponseEntity<>(link, HttpStatus.NOT_MODIFIED);
 

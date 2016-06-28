@@ -39,13 +39,21 @@ public class ConceptInsightsService {
 
     private ConceptInsights conceptInsights;
 
+    private Corpus corpus;
+
     @Autowired
     public void setConceptInsights(final ConceptInsights conceptInsights) {
         this.conceptInsights = conceptInsights;
     }
 
+    public ConceptInsights getConceptInsights() {
+        return conceptInsights;
+    }
+
     @Autowired
-    private Corpus corpus;
+    public void setCorpus(final Corpus corpus) {
+        this.corpus = corpus;
+    }
 
     /**
      * Create a Watson Corpus document.
@@ -206,7 +214,7 @@ public class ConceptInsightsService {
      *
      * @return sorted list of unique keywords
      */
-    public List<String> identifyInferKeywords(String text) {
+    List<String> identifyInferKeywords(String text) {
         String abstractText = (text == null || text.length() == 0) ? "keyword" : text;
         List<String> keywords = new ArrayList<>();
         final ServiceCall<Annotations> annotations = conceptInsights.annotateText(Graph.WIKIPEDIA, abstractText);
