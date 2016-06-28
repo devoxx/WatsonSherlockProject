@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div class="form-container">
-		<h1>Welcome to the Devoxx Watson Content Uploader</h1>
+		<h1>Welcome to the Devoxx Sherlock Content Uploader</h1>
 		
 		Here you can upload an OGG audio file or a Voxxed article to the Devoxx Watson corpus.<br/><br/>
 		

@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>devoxx.watson</groupId>
-	<artifactId>DevoxxWatsonAudioFileProcessor</artifactId>
+	<artifactId>SherlockWatsonUploaderProcessor</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0</version>
-	<name>Devoxx Watson Audio File Processor Maven Webapp</name>
+	<name>Sherlock Watson Uploader and Processor web app</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -105,7 +105,7 @@
 					<version>2.4</version>
 					<configuration>
 						<warSourceDirectory>src/main/webapp</warSourceDirectory>
-						<warName>DevoxxWatsonAudioFileProcessor</warName>
+						<warName>SherlockWatsonUploaderProcessor</warName>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>

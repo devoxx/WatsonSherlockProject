@@ -1,7 +1,7 @@
-The DeVoxxEd Watson project
-=================================
+The Devoxx Sherlock Watson project
+==================================
 
-This DeVoxxEd IBM Watson project allows you to upload audio files and articles which are processed by different Watson services like Concept Insights, Speech to Text and Alchemy Language. 
+This Devoxx Sherlock IBM Watson project allows you to upload audio files and articles which are processed by different Watson services like Concept Insights, Speech to Text and Alchemy Language. 
 
 ## Running the Application Locally in Eclipse with Liberty
 
@@ -59,7 +59,7 @@ Use the following steps to run the application with Maven:
     $ mvn liberty:run-server
     ```
 
-Once the server is running, the application will be available under [http://localhost:9080/JavaHelloWorldApp](http://localhost:9080/JavaHelloWorldApp).
+Once the server is running, the application will be available under [http://localhost:9080/SherlockWatsonUploaderProcessor](http://localhost:9080/SherlockWatsonUploaderProcessor).
 
 
 3. To push the application to Bluemix using the cf command line tool:
@@ -69,15 +69,15 @@ Once the server is running, the application will be available under [http://loca
 
 ## Test REST interface using Swagger
 
-1. Surf to http://[yourHostName]/swagger
-2. Enter "http://[yourHostName]/v2/api-docs/"
+1. Surf to http://sherlock.devoxx.com/swagger/
+2. Enter http://sherlock.devoxx.com/v2/api-docs 
 3. You can now explore the Search REST method
 
 ## Related YouTube video
   
 [![YouTube Video](http://img.youtube.com/vi/KC7CMrLLm14/0.jpg)](https://www.youtube.com/watch?v=KC7CMrLLm14)
 
-Watch [Stephan Janssen](https://twitter.com/stephan007) and [Sandhya Kapoor](https://twitter.com/sandhyakapoor9) explain the DeVoxxEd project during DevoxxUK
+Watch [Stephan Janssen](https://twitter.com/stephan007) and [Sandhya Kapoor](https://twitter.com/sandhyakapoor9) explain the Devoxx Sherlock project during DevoxxUK
 
 # License
 
