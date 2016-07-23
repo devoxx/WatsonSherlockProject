@@ -6,6 +6,7 @@ import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.SpeechToTextException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.ConversationModel;
+import com.devoxx.watson.model.SpeechToTextModel;
 import com.devoxx.watson.service.*;
 import com.devoxx.watson.util.SoupUtil;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Document;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.devoxx.watson.service.ConceptInsightsService.USER_FIELD_THUMBNAIL;
 import static com.devoxx.watson.service.ConceptInsightsService.USER_FIELD_THUMBNAIL_KEYWORDS;
@@ -40,6 +43,13 @@ public class WatsonController {
     private ConversationService conversationService;
 
     private LanguageTranslateService languageTranslateService;
+
+    private Double textRecognitionMinConfidence;
+
+    @Autowired
+    public void setTextRecognitionMinConfidence(final Double textRecognitionMinConfidence) {
+        this.textRecognitionMinConfidence = textRecognitionMinConfidence;
+    }
 
     @Autowired
     public void setConceptInsightsService(final ConceptInsightsService conceptInsightsService) {
@@ -216,5 +226,24 @@ public class WatsonController {
         conversationModel.setInput(conversation.getInput());
         conversationModel.setWatsonResponse(StringUtils.join(conversation.getResponse(), " "));
         return conversationModel;
+    }
+
+    /**
+     * Process the provided Audio File
+     * @param tempFile temp audio file to be processed
+     * @return list of detected SpeechToTextModel
+     */
+    List<SpeechToTextModel> speechToText(File tempFile) {
+        return speechToTextService.processAudioFile(tempFile);
+    }
+
+    List<String> getKeywordsFromTextModels(List<SpeechToTextModel> analysisResults) {
+        // Getting the recognized text that have a confidence level greater than
+        return analysisResults.stream()
+                .filter(analysisResult -> analysisResult.getResultConfidence() > textRecognitionMinConfidence)
+                .map(SpeechToTextModel::getRecognizedText)
+                .map(recognisedtext -> alchemyLanguageService.getKeywordsFromTextAPI(recognisedtext))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }

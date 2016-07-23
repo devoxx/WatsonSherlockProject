@@ -1,6 +1,7 @@
 package com.devoxx.watson.service;
 
 import com.devoxx.watson.exception.SpeechToTextException;
+import com.devoxx.watson.model.SpeechToTextModel;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,32 @@ public class SpeechToTextService {
     @Autowired
     public void setConceptInsightsService(final ConceptInsightsService conceptInsightsService) {
         this.conceptInsightsService = conceptInsightsService;
+    }
+
+    /**
+     * Process the Audio File and return the detected texts
+     * @param audioFile the audio file to process
+     * @return List of SpeechToTextModel detected
+     */
+    public List<SpeechToTextModel> processAudioFile (final File audioFile){
+        List<SpeechToTextModel> speechToTextModelList = new ArrayList<>();
+        SpeechResults recognitionResult = speechToText.recognize(audioFile).execute();
+        recognitionResult.getResults()
+                .stream()
+                .forEach(
+                        result -> result.getAlternatives()
+                                .stream()
+                                .peek(
+                                        alternative -> LOGGER.log(
+                                                Level.INFO
+                                                , "processAudioFile only : Transcript:"+alternative.getTranscript()+":Confidence:"+alternative.getConfidence().toString()+":"
+                                        )
+                                )
+                                .forEach(
+                                        speechAlternative -> speechToTextModelList.add(new SpeechToTextModel(speechAlternative.getTranscript(), speechAlternative.getConfidence()))
+                                )
+                );
+        return speechToTextModelList;
     }
 
     /**

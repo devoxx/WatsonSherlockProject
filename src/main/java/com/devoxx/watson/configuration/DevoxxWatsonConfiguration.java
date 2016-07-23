@@ -1,5 +1,6 @@
 package com.devoxx.watson.configuration;
 
+import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
 import com.ibm.watson.developer_cloud.dialog.v1.DialogService;
@@ -105,8 +106,20 @@ class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public AlchemyLanguage alchemyLanguage() {
+        final AlchemyLanguage alchemyLanguage = new AlchemyLanguage();
+        alchemyLanguage.setApiKey(env.getProperty("alchemy.apikey"));
+        return alchemyLanguage;
+    }
+
+    @Bean
     public String alchemyApiKey() {
         return env.getProperty("alchemy.apikey");
+    }
+
+    @Bean
+    public Double getTextRecognitionMinConfidence() {
+        return  Double.valueOf(env.getProperty("speechtotext.min.confidence"));
     }
 
     @Bean

@@ -6,6 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
+import com.ibm.watson.developer_cloud.alchemy.v1.model.Keyword;
+import com.ibm.watson.developer_cloud.alchemy.v1.model.Keywords;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,10 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author Stephan Janssen
@@ -54,6 +56,13 @@ public class AlchemyLanguageService {
     private static final int TIMEOUT_IN_MILLIS = 15000;
 
     private String apikey;
+
+    private AlchemyLanguage alchemyLanguage;
+
+    @Autowired
+    public void setAlchemyLanguage(final AlchemyLanguage alchemyLanguage) {
+        this.alchemyLanguage = alchemyLanguage;
+    }
 
     @Autowired
     public void setApikey(final String apikey) {
@@ -179,6 +188,21 @@ public class AlchemyLanguageService {
         }
         Collections.sort(keywords);
         return keywords;
+    }
+
+    /**
+     * Same method as above but using directly the Java SDK (no doing any REST Call)
+     * @param text the text to be parsed to find keywords
+     * @return list of detected keywords
+     */
+    public List<String> getKeywordsFromTextAPI (final String text){
+        Map<String, Object> params = new HashMap<>();
+        params.put(AlchemyLanguage.TEXT,text);
+
+        Keywords keywords = alchemyLanguage.getKeywords(params).execute();
+        return keywords.getKeywords().stream()
+                .map(Keyword::getText)
+                .collect(Collectors.toList());
     }
 
     /**
