@@ -38,6 +38,8 @@ public class WatsonController {
 
     private AlchemyLanguageService alchemyLanguageService;
 
+    private AlchemyDataNewsService alchemyDataNewsService;
+
     private SpeechToTextService speechToTextService;
 
     private ConversationService conversationService;
@@ -59,6 +61,11 @@ public class WatsonController {
     @Autowired
     public void setAlchemyLanguageService(final AlchemyLanguageService alchemyLanguageService) {
         this.alchemyLanguageService = alchemyLanguageService;
+    }
+
+    @Autowired
+    public void setAlchemyDataNewsService(final AlchemyDataNewsService alchemyDataNewsService) {
+        this.alchemyDataNewsService = alchemyDataNewsService;
     }
 
     @Autowired
@@ -242,8 +249,12 @@ public class WatsonController {
         return analysisResults.stream()
                 .filter(analysisResult -> analysisResult.getResultConfidence() > textRecognitionMinConfidence)
                 .map(SpeechToTextModel::getRecognizedText)
-                .map(recognisedtext -> alchemyLanguageService.getKeywordsFromTextAPI(recognisedtext))
+                .map(recognizedtext -> alchemyLanguageService.getKeywordsFromTextAPI(recognizedtext))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    public List<Result> getDocumentsNews(List<String> keywords) {
+        return conceptInsightsService.searchDocuments(keywords.stream().collect(Collectors.joining(" and ")));
     }
 }

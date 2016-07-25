@@ -7,8 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
+import com.ibm.watson.developer_cloud.alchemy.v1.model.Concepts;
 import com.ibm.watson.developer_cloud.alchemy.v1.model.Keyword;
 import com.ibm.watson.developer_cloud.alchemy.v1.model.Keywords;
+import com.ibm.watson.developer_cloud.http.ServiceCall;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -275,4 +277,15 @@ public class AlchemyLanguageService {
 
         return "no results";
     }
+
+    public Concepts getConcepts(final List<String> keywords){
+        Map<String, Object> params = new HashMap<String, Object>();
+        String taxonomyLabels = keywords.stream().collect(Collectors.joining(" and "));
+        params.put(AlchemyLanguage.CQUERY,taxonomyLabels);
+
+        return alchemyLanguage.getConcepts(params).execute();
+
+    }
+
+
 }

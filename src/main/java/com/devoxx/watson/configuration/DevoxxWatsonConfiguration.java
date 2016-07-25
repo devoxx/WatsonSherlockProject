@@ -1,5 +1,6 @@
 package com.devoxx.watson.configuration;
 
+import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyDataNews;
 import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.Corpus;
@@ -110,6 +111,18 @@ class DevoxxWatsonConfiguration extends WebMvcConfigurerAdapter {
         final AlchemyLanguage alchemyLanguage = new AlchemyLanguage();
         alchemyLanguage.setApiKey(env.getProperty("alchemy.apikey"));
         return alchemyLanguage;
+    }
+
+    @Bean
+    public AlchemyDataNews alchemyDataNews() {
+        final AlchemyDataNews alchemyDataNews = new AlchemyDataNews();
+        alchemyDataNews.setApiKey(env.getProperty("alchemy.apikey"));
+        return alchemyDataNews;
+    }
+
+    @Bean
+    public Integer alchemyDataNewsServiceYearsInThePast() {
+        return Integer.valueOf(env.getProperty("alchemyDataNewsService.years.inthepast"));
     }
 
     @Bean

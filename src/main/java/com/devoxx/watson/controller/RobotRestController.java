@@ -3,6 +3,9 @@ package com.devoxx.watson.controller;
 import com.devoxx.watson.configuration.DevoxxWatsonInitializer;
 import com.devoxx.watson.exception.FileException;
 import com.devoxx.watson.model.SpeechToTextModel;
+import com.ibm.watson.developer_cloud.alchemy.v1.model.Concepts;
+import com.ibm.watson.developer_cloud.alchemy.v1.model.DocumentsResult;
+import com.ibm.watson.developer_cloud.concept_insights.v2.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -101,6 +104,18 @@ public class RobotRestController {
 
         List<String> keywordsFromTextModels =  watsonController.getKeywordsFromTextModels(analysisResults);
         return new ResponseEntity<>(keywordsFromTextModels, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/concepts"
+            , method = RequestMethod.POST
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getConcepts(@RequestParam("keywords") List<String> keywordList){
+        if (keywordList.isEmpty()){
+            return new ResponseEntity<>("Missing keywords", HttpStatus.NOT_ACCEPTABLE);
+        }
+        System.out.println("keywordList:"+keywordList.toString()+":");
+        List<Result> results =  watsonController.getDocumentsNews(keywordList);
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 }
 
