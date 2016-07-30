@@ -1,6 +1,7 @@
 package com.devoxx.watson.service;
 
 import com.devoxx.watson.model.AlchemyContent;
+import com.devoxx.watson.model.DocumentSearchContent;
 import com.ibm.watson.developer_cloud.concept_insights.v2.ConceptInsights;
 import com.ibm.watson.developer_cloud.concept_insights.v2.model.*;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 /**
  * @author Stephan Janssen
  * @author James Weaver
+ * @author Daniel De Luca
  */
 @Component
 public class ConceptInsightsService {
@@ -28,6 +31,7 @@ public class ConceptInsightsService {
 
     private static final String DEVOXX_PICTURE = "https://pbs.twimg.com/media/Ciph_FlWkAAF4D-.jpg";
 
+    private static final String USER_FIELDS = "user_fields";
     private static final String USER_FIELD_LINK = "link";
     private static final String USER_FIELD_LANGUAGE = "language";
     private static final String USER_FIELD_PUBLICATION_DATE = "publicationDate";
@@ -36,6 +40,8 @@ public class ConceptInsightsService {
     private static final String USER_FIELD_EMOTIONS = "emotions";
     public static final String USER_FIELD_THUMBNAIL = "thumbnail";
     public static final String USER_FIELD_THUMBNAIL_KEYWORDS = "thumbnailKeywords";
+
+    private static final String CONCEPT_FIELDS_ABSTRACT = "abstract";
 
     private ConceptInsights conceptInsights;
 
@@ -172,8 +178,8 @@ public class ConceptInsightsService {
         searchGraphConceptByLabelParams.put(ConceptInsights.LIMIT, ONLY_USE_TWO_CONCEPTS);
 
         RequestedFields concept_fields = new RequestedFields();
-        concept_fields.include("link");
-        concept_fields.include("abstract");
+        concept_fields.include(USER_FIELD_LINK);
+        concept_fields.include(CONCEPT_FIELDS_ABSTRACT);
 
         searchGraphConceptByLabelParams.put(ConceptInsights.CONCEPT_FIELDS, concept_fields);
 
@@ -197,7 +203,7 @@ public class ConceptInsightsService {
         parameters.put(ConceptInsights.LIMIT, RETURN_ONLY_TEN_CONCEPTS);
 
         RequestedFields requestedFields = new RequestedFields();
-        requestedFields.include("user_fields");
+        requestedFields.include(USER_FIELDS);
         parameters.put(ConceptInsights.DOCUMENT_FIELDS, requestedFields);
 
         final QueryConcepts queryConcepts = conceptInsights.conceptualSearch(corpus, parameters).execute();
@@ -205,6 +211,39 @@ public class ConceptInsightsService {
         LOGGER.log(Level.INFO, "Found {0} matches for conceptual search", queryConcepts.getResults().size());
 
         return queryConcepts.getResults();
+    }
+
+    /**
+     * Mapping function to be used in Stream api
+     */
+    Function<Result, DocumentSearchContent> conceptResultToDocumentSearchContent
+            = conceptResult -> {
+                Map<String, String> conceptUserFields = conceptResult.getUserFields();
+                DocumentSearchContent documentSearchContent = new DocumentSearchContent();
+                documentSearchContent.setAuthor(conceptUserFields.get(USER_FIELDS_AUTHORS));
+                documentSearchContent.setThumbnail(conceptUserFields.get(USER_FIELD_THUMBNAIL));
+                documentSearchContent.setLink(conceptUserFields.get(USER_FIELD_LINK));
+                documentSearchContent.setTitle(conceptResult.getLabel());
+                documentSearchContent.setSearchScore(conceptResult.getScore());
+                documentSearchContent.setPublicationDate(conceptUserFields.get(USER_FIELD_PUBLICATION_DATE));
+                //documentSearchContent.setContent(conceptUserFields.get());
+                return documentSearchContent;
+            };
+
+    /**
+     * Search for documents based on concepts (blank separated list)
+     * @param concepts blank separated list of concepts
+     * @return list of DocumentSearchContent, null if nothing is found.
+     */
+    public List<DocumentSearchContent> getDocumentSearchContentList(String concepts) {
+        List<DocumentSearchContent> documentContentResults = null;
+        List<Result> watsonResults = searchDocuments(concepts);
+        if (watsonResults != null) {
+            documentContentResults = watsonResults.stream()
+                    .map(conceptResultToDocumentSearchContent)
+                    .collect(Collectors.toList());
+        }
+        return documentContentResults;
     }
 
     /**

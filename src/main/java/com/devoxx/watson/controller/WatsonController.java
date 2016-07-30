@@ -6,6 +6,7 @@ import com.devoxx.watson.exception.DocumentThumbnailKeywordsException;
 import com.devoxx.watson.exception.SpeechToTextException;
 import com.devoxx.watson.model.AlchemyContent;
 import com.devoxx.watson.model.ConversationModel;
+import com.devoxx.watson.model.DocumentSearchContent;
 import com.devoxx.watson.model.SpeechToTextModel;
 import com.devoxx.watson.service.*;
 import com.devoxx.watson.util.SoupUtil;
@@ -254,7 +255,12 @@ public class WatsonController {
                 .collect(Collectors.toList());
     }
 
-    public List<Result> getDocumentsNews(List<String> keywords) {
-        return conceptInsightsService.searchDocuments(keywords.stream().collect(Collectors.joining(" and ")));
+    /**
+     * Search for documents based on concepts (blank separated list)
+     * @param concepts blank separated list of concepts
+     * @return list of DocumentSearchContent, null if nothing is found.
+     */
+    public List<DocumentSearchContent> getDocumentSearchContentList(String concepts) {
+        return conceptInsightsService.getDocumentSearchContentList(concepts);
     }
 }
